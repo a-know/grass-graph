@@ -9,6 +9,7 @@ GEM
       pkg-config
     haml (4.0.7)
       tilt
+    mini_magick (4.3.6)
     pkg-config (1.1.7)
     rack (1.6.4)
     rack-protection (1.5.3)
@@ -27,6 +28,7 @@ PLATFORMS
 
 DEPENDENCIES
   haml
+  mini_magick
   rsvg2
   sinatra
 

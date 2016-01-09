@@ -2,6 +2,7 @@
 require 'sinatra'
 require 'rsvg2'
 require 'haml'
+require 'mini_magick'
 
 get '/' do
 end
@@ -14,8 +15,25 @@ get '/graph/*' do |id|
   svg_data = File.open('./tmp/grass.svg').read
   png_data = ImageConvert.svg_to_png(svg_data, width, height)
 
+  if params[:rotate] && integer_string?(params[:rotate])
+    image = MiniMagick::Image.read(png_data)
+    image.combine_options do |b|
+      # b.resize "250x200>"
+      b.rotate params[:rotate]
+      # b.flip
+    end
+    png_data = image.to_blob
+  end
+
   content_type 'png'
   png_data
+end
+
+def integer_string?(str)
+  Integer(str)
+  true
+rescue ArgumentError
+  false
 end
 
 class ImageConvert
