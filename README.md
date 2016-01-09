@@ -37,4 +37,4 @@ You can also specify these two options at the same time .
 
 In Japanese.
 
-//TODO
+[GitHub の草状況を PNG 画像で返す heroku app をつくってみた - えいのうにっき](http://blog.a-know.me/entry/2016/01/09/222210)
