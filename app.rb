@@ -8,9 +8,13 @@ get '/' do
 end
 
 get '/graph/*' do |id|
-  `curl https://github.com/#{id} | awk '/<svg/,/svg>/' | sed -e 's@<svg@<svg xmlns="http://www.w3.org/2000/svg"@' > ./tmp/grass.svg`
+  tmpfile_path = "./tmp/grass_#{Time.now.strftime('%Y-%m-%d')}.svg"
+  unless File.exists?(tmpfile_path)
+    `curl https://github.com/#{id} | awk '/<svg/,/svg>/' | \
+    sed -e 's@<svg@<svg xmlns="http://www.w3.org/2000/svg"@' > #{tmpfile_path}`
+  end
 
-  svg_data = File.open('./tmp/grass.svg').read
+  svg_data = File.open(tmpfile_path).read
   png_data = ImageConvert.svg_to_png(svg_data, 710, 110)
 
   if params[:rotate] || params[:width] || params[:height]
