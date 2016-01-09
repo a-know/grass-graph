@@ -21,11 +21,16 @@ end
 class ImageConvert
   def self.svg_to_png(svg, width, height)
     svg = RSVG::Handle.new_from_data(svg)
-    surface = Cairo::ImageSurface.new(Cairo::FORMAT_ARGB32, width, height)
-    context = Cairo::Context.new(surface)
-    context.render_rsvg_handle(svg)
+
     b = StringIO.new
-    surface.write_to_png(b)
+    Cairo::ImageSurface.new(Cairo::FORMAT_ARGB32, width, height) do |surface|
+      context = Cairo::Context.new(surface)
+      context.render_rsvg_handle(svg)
+      context.rotate(2.to_f)
+      surface.write_to_png(b)
+      surface.finish
+    end
+
     return b.string
   end
 end
