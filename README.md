@@ -12,17 +12,26 @@ Generate and Get PNG image of `github-id`.
 
 `https://{your-heroku-app}.herokuapp.com/graph/{github-id}`
 
+![grass-graph-normal](https://cloud.githubusercontent.com/assets/1097533/12216115/e06f1aaa-b71a-11e5-9511-18cda413027c.png)
+
+
 You can specify the angle to rotate the image.
 
 `https://{your-heroku-app}.herokuapp.com/graph/{github-id}?rotate=270`
+
+![grass-graph-rotate](https://cloud.githubusercontent.com/assets/1097533/12216118/fb1cdb26-b71a-11e5-99f9-194185a6bcc6.png)
 
 You can specify the size to resize the image.
 
 `https://{your-heroku-app}.herokuapp.com/graph/{github-id}?width=350&height=50`
 
+![grass-graph-resize](https://cloud.githubusercontent.com/assets/1097533/12216121/0a54626c-b71b-11e5-9713-d1aa6c312d0b.png)
+
 You can also specify these two options at the same time .
 
 `https://{your-heroku-app}.herokuapp.com/graph/{github-id}?rotate=270&width=350&height=50`
+
+![grass-graph-both](https://cloud.githubusercontent.com/assets/1097533/12216122/178d62da-b71b-11e5-9a28-250a1a4eec76.png)
 
 ## More
 
