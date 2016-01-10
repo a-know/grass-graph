@@ -15,11 +15,11 @@ get '/graph/*' do |id|
   end
 
   svg_data = File.open(tmpfile_path).read
-  png_data = ImageConvert.svg_to_png(svg_data, 710, 110)
+  png_data = ImageConvert.svg_to_png(svg_data, 720, 115)
 
   if params[:rotate] || params[:width] || params[:height]
-    width  = params[:width]  ? params[:width].to_i : 710
-    height = params[:height] ? params[:height].to_i : 110
+    width  = params[:width]  ? params[:width].to_i : 720
+    height = params[:height] ? params[:height].to_i : 115
 
     image = MiniMagick::Image.read(png_data)
     image.combine_options do |b|
