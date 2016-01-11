@@ -48,7 +48,6 @@ class ImageConvert
     Cairo::ImageSurface.new(Cairo::FORMAT_ARGB32, width, height) do |surface|
       context = Cairo::Context.new(surface)
       context.render_rsvg_handle(svg)
-      context.rotate(2.to_f)
       surface.write_to_png(b)
       surface.finish
     end
