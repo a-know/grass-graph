@@ -10,7 +10,7 @@ end
 get '/graph/*' do |id|
   tmpfile_path = "./tmp/#{id}_#{Time.now.strftime('%Y-%m-%d')}.svg"
   unless ( File.exists?(tmpfile_path) && File.size(tmpfile_path) != 0)
-    `curl https://github.com/#{id} | awk '/<svg/,/svg>/' | \
+    `curl https://github.com/#{id} | awk '/<svg.+class="js-calendar-graph-svg"/,/svg>/' | \
     sed -e 's@<svg@<svg xmlns="http://www.w3.org/2000/svg"@' > #{tmpfile_path}`
   end
 
