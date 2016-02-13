@@ -2,11 +2,18 @@
 
 Generate a PNG image of the specified GitHub account's public contribution graph.
 
-## Setup
+## Use as an External Service
+
+[Grass-Graph / Imaging your Publick Contributions](https://grass-graph.shitemil.works/)
+
+## Try grass-graph yourself on heroku
+
+
+### Setup
 1. Click [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 
-## Usage
+### Usage
 
 Generate and Get PNG image of `github-id`.
 
