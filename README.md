@@ -1,5 +1,7 @@
 # grass-graph
 
+![grass-graph-logo](grass-graph-logo.png)
+
 Generate a PNG image of the specified GitHub account's public contribution graph.
 
 ## Use as an External Service
