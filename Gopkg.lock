@@ -7,9 +7,15 @@
   revision = "e83ac2304db3c50cf03d96a2fcd39009d458bc35"
   version = "v3.3.2"
 
+[[projects]]
+  branch = "master"
+  name = "github.com/jessevdk/go-assets"
+  packages = ["."]
+  revision = "4f4301a06e153ff90e17793577ab6bf79f8dc5c5"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e8c6f3939b4fcc3bdc14fac5de8496c6cd92841ad092f9df51a7f84fef8f0a7d"
+  inputs-digest = "de516793824a333dfc38f3f9480d262092992fb72bf9ffc61102c4356cbc7dfd"
   solver-name = "gps-cdcl"
   solver-version = 1

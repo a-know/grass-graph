@@ -6,14 +6,14 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/a-know/grass-graph-go/handlers"
 	"github.com/go-chi/chi"
 )
 
 func main() {
 	r := chi.NewRouter()
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome"))
-	})
+	t := &handlers.TemplateHandler{Filename: "index.html", Assets: Assets}
+	r.Get("/", t.HandleTemplate)
 	r.Get("/knock", func(w http.ResponseWriter, r *http.Request) {
 		name := os.Getenv("SLACK_BOT_NAME")
 		text := "Visitor Incoming!!\nUA : hoge\nLanguage : fuga"
