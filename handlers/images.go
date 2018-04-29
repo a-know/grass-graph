@@ -25,14 +25,27 @@ func HandleImages(w http.ResponseWriter, r *http.Request) {
 }
 
 func (t *Target) extractSvg() {
-	url := fmt.Sprintf("https://github.com/%s", t.githubID)
+	tmpDirname := fmt.Sprintf("tmp/gg_svg/%s", time.Now().Format("2006-01-02"))
+	tmpFilename := fmt.Sprintf("%s/%s.svg", tmpDirname, t.githubID)
 
+	if _, err := os.Stat(tmpFilename); err == nil {
+		return
+	}
+
+	// TODO retry
+
+	url := fmt.Sprintf("https://github.com/%s", t.githubID)
 	resp, err := http.Get(url)
 	if err != nil {
 		// TODO logger
 		panic(err)
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode == 404 {
+		// TODO logger
+		panic(err)
+	}
 
 	byteArray, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -57,15 +70,14 @@ func (t *Target) extractSvg() {
 	t.svgData = extractData
 
 	// make destination dir
-	tmp_dirname := fmt.Sprintf("tmp/gg_svg/%s", time.Now().Format("2006-01-02"))
-	if _, err := os.Stat(tmp_dirname); err != nil {
-		if err := os.MkdirAll(tmp_dirname, 0777); err != nil {
+	if _, err := os.Stat(tmpDirname); err != nil {
+		if err := os.MkdirAll(tmpDirname, 0777); err != nil {
 			// TODO logger
 		}
 	}
 
 	// output to file
-	file, err := os.Create(fmt.Sprintf("%s/%s.svg", tmp_dirname, t.githubID))
+	file, err := os.Create(tmpFilename)
 	if err != nil {
 		// TODO logger
 	}
