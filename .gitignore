@@ -2,3 +2,4 @@ vendor/
 *.bin
 .envrc
 assets.go
+tmp/

@@ -22,6 +22,8 @@ func main() {
 	fonts := &handlers.AssetsHandler{Kind: "fonts"}
 	r.Get("/fonts/*", fonts.HandleAssets)
 
+	r.Get("/images/{githubID}.png", handlers.HandleImages)
+
 	images := &handlers.AssetsHandler{Kind: "images"}
 	r.Get("/images/*", images.HandleAssets)
 
