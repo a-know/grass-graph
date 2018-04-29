@@ -1,0 +1,494 @@
+/*====================================
+	Theme: Rewind - Coming Soon Page 
+	Author: appengg.com
+	Version: 1.0.2
+======================================*/
+
+
+// Google Fonts
+@import url(http://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic);
+
+// Imports
+@import "partials/variables";
+@import "partials/typography";
+@import "partials/buttons";
+
+
+
+/*==============================================
+			      GENERAL STYLING
+================================================*/
+
+
+body,html {
+	width: 100%;
+	height: 100%;
+	overflow-x: hidden;
+}
+
+body {
+	font-family: $font-family;
+	font-size: $font-size;
+	font-weight: $normal;
+	line-height: 1.4;
+	background: $white;
+}
+
+ul,ol {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.section-padding {
+	padding: 150px 0;
+}
+
+a,
+a:active,
+a:focus,
+a:hover {
+	text-decoration: none;
+	outline: 0;
+}
+
+.heading h2{
+	text-align: center;
+	color: $text-color;
+	line-height: 1.3;
+	margin-bottom: 130px;
+	font-weight: $light;
+	
+	span {
+		color: $base-color;
+		text-transform: capitalize;
+		font-weight: $semibold;
+	}
+}
+
+/*==============================================
+			      	HOME
+================================================*/
+
+#home {
+	position: relative;
+	
+	&:before {
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background-color: rgba($text-color, 0.8);
+		top: 0;
+		left: 0;
+		right: 0;
+	}
+	
+	&:after {
+        background: linear-gradient(-45deg, $base-color 16px, transparent 0), linear-gradient(45deg, $base-color 16px, transparent 0);
+        background-position: left-bottom;
+        background-repeat: repeat-x;
+        background-size: 32px 32px;
+        content: " ";
+        display: block;
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: 100%;
+        height: 32px;
+	}
+}
+
+.image-bg {
+	background-image: url(../images/image-bg/image-bg.jpg);
+	background-position: center;
+	background-size: cover;
+}
+
+/*==============================================
+			      	HEADER
+================================================*/
+
+.header {
+	display: block;
+	padding: 30px 0;
+	border-bottom: 1px solid rgba($white, 0.5);
+	
+	.logo {
+		float: left;
+		
+		img {
+			width: 150px;
+		}
+	}
+	
+	.social-icons {
+		display: block;
+		float: right; 
+			
+		ul li {
+			color: $white;
+			display: inline-block;
+			text-align: center;
+			
+			a {
+				display: block;
+				color: $text-color;
+				@include border-radius;
+				@include transition;
+				 width: 40px;
+				 height: 40px;
+				margin: 0 5px;
+				line-height: 40px;
+				font-size: 20px;
+				background: $white;
+		
+				
+				&:hover,
+				&:active,
+				&:focus {
+					background: $base-color;
+				}	
+			} 
+		}
+	}
+}
+
+ @media only screen and (max-width : 768px){
+	.header .social-icons,
+	.header .logo {
+		 float: none;
+		 text-align: center;
+	 }
+	 .header .logo img {
+		 margin: 0 auto;
+		 display: block;
+		 padding-bottom: 20px;
+	 }
+}
+
+/*==============================================
+			      INRO CONTENT
+================================================*/
+
+.intro {
+	padding: 200px 0;
+	color: white;
+	
+	.countdown {
+		span {
+			color: $base-color;
+			font-weight: $semibold;
+		}
+	}
+	.intro-heading {
+		.tlt {
+			font-family: 'Raleway', sans-serif;
+			text-transform: capitalize;
+			font-weight: $bold;
+			padding: 5px 0 20px; 
+			font-size: 55px;
+		}
+	}
+	p.intro-texts {
+		max-width: 920px;
+		color: rgba($white, 0.8);
+		letter-spacing: .5px;
+	}
+	
+	.subscribe {
+		position: relative;	
+		margin: 50px 10px 0;
+		height: 42px; 
+		padding: 0;
+	
+	.form-control {
+ 		background-color: rgba($white, .9);
+  		border: 1px solid #fff;
+  		color: #333;
+  		box-shadow: none;
+ 		height: 40px;
+  		font-weight: 400;
+  		padding: 0 1.5em 0 2.2em;
+	}
+
+	.form-control:focus {
+  		border-color: #fff;
+  		outline: 0;
+  		box-shadow: none;
+	}
+
+	#mc-form,
+	#mc-form .btn-default { height: 40px; }
+
+
+	#mc-notification {
+  		margin: 0.75em 0 0;
+  		font-weight: 300;
+  		color: #7d7d7d;
+	}
+
+	.error { color: #f44336 !important; }
+
+	.valid { color: #f55e25 !important; }
+
+	.error i,
+	.valid i { padding-right: .5em; }
+
+	#mc-form i.fa-envelope-square {
+ 		 color: $base-color;
+  		position: absolute;
+  		left: 15px;
+  		top: 13px;
+  		z-index: 2;
+	}
+	
+	p.notify {
+		padding-top: 5px;
+		color: white;
+		font-style: italic;
+	}
+	}
+}
+
+@media only screen and (max-width : 442px) {
+	.intro {
+		padding: 100px 0;
+		text-align: center;
+		
+		.countdown h4 {
+			font-size: 18px;
+		}
+		.intro-heading {
+			.tlt { 
+				font-size: 45px;
+			}
+		}
+	}
+}
+/*==============================================
+			      	ABOUT
+================================================*/
+
+.about {
+	position: relative;
+	background: $base-color;
+	padding: 80px 0;
+	
+	
+	
+	h2 {
+		text-align: center;
+		color: $white;
+		font-size: 40px;
+		font-weight: $semibold;
+		
+		small {
+			color: $text-color;
+		}
+	}
+}
+
+/*==============================================
+			      	SERVICES
+================================================*/
+
+.services {
+	text-align: center;
+	
+	.s-content {
+		text-align: center;
+		i {
+			font-size: 24px;
+			color: $base-color;
+		}
+		h4.s-heading {
+			text-transform: capitalize;
+			padding: 20px 0;
+		}
+		span {
+			display: block;
+			margin: 0 auto;
+			width: 70px;
+			height: 1px;
+			background: $base-color;
+		}
+		p.s-text {
+			padding-top: 20px;
+			letter-spacing: 1px;
+		}
+	}
+}
+
+ @media only screen and (max-width : 768px){ 
+ 	
+	.services .padding60 {
+	padding-bottom: 60px;
+	} 
+ }
+
+/*==============================================
+			      	INVESTORS
+================================================*/
+
+.investors {
+	background-image:url(../images/Investors-bg.jpg);
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	
+	.heading h2 {
+		color: $white;
+	}
+	
+	.investors-logo img {
+		&:hover,
+		&:focus, {
+			opacity: 0.8;	
+		}
+	}
+}
+
+ @media only screen and (max-width : 768px){ 
+ 	
+	.investors-logo img {
+		display: block;
+		margin: 0 auto;
+		width: 250px;
+	}
+ }
+ 
+ /*==============================================
+			      	CONTACT
+================================================*/
+#contact-form > div[class*="for-user-"] > i,
+#mc-form i.fa-envelope-square {
+  position: absolute;
+  left: 25px;
+  top: 21px;
+  z-index: 2;
+}
+
+.contact-us { background: url(../images/02.jpg) center bottom no-repeat; }
+
+
+.contact-form .form-control {
+  border-color: #ddd;
+  margin-bottom: 20px;
+  box-shadow: none;
+  padding: 5px 10px 5px 25px;
+}
+
+.contact-form label.error {
+  margin-bottom: 10px;
+  font-weight: $light;
+  color: $base-color;
+}
+
+#contact-form div[class*="for-user-"] { position: relative; }
+
+.success-cf,
+.error-cf { display: none; }
+
+.contact-form .success-cf p,
+.contact-form .error-cf p {
+  position: absolute;
+  display: block;
+  top: 20%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 10;
+  width: 80%;
+  margin: 0 auto !important;
+  padding: 20px 25px;
+  margin-bottom: 0;
+  border-radius: 4px;
+}
+
+.success-cf p {
+  background: #dff0d8;
+  color: #3c763d;
+  border: 1px solid rgba(60, 118, 61, 0.18);
+}
+
+.error-cf p {
+  background: #FFE5E5;
+  color: #ea5050;
+  border: 1px solid rgba(169, 82, 82, 0.18);
+}
+
+.contact-form label.error i,
+.success-cf i,
+.error-cf i { padding-right: 5px; }
+
+.contact-form .form-control.error {
+  border-color: #E7BEBE;
+  color: #D95C5C;
+  border-left: none;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  box-shadow: 5px 0 0 0 $base-color inset;
+  margin-bottom: 5px;
+}
+
+.contact-form .form-control.error:focus {
+  border-color: #ff5050;
+  color: #ff5050;
+  box-shadow: 5px 0 0 0 #FF5050 inset;
+}
+
+.contact-form .valid { border-color: #2ecc71; }
+
+ 
+ /*==============================================
+			      	FOOTER
+================================================*/
+
+.footer {
+	background: $text-color;
+	padding: 80px 0;
+	text-align: center;
+	
+	img {
+		display: block;
+		width: 150px;
+		margin: 0 auto;
+	}
+	
+	p {
+		text-transform: capitalize;
+		padding-top: 20px;
+		color: $white;
+	}
+}
+
+/*============================================= 
+				PRELOADER 
+=============================================*/
+
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $base-color;
+  z-index: 9999;
+  height: 100%;
+}
+
+#status {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: url(../images/loader.gif) no-repeat center center;
+  margin: auto;
+}
+

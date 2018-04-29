@@ -1,0 +1,204 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<head>
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-20955494-7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments)};
+      gtag('js', new Date());
+
+      gtag('config', 'UA-20955494-7');
+    </script>
+
+    <!-- META CONTENT -->
+    <meta charset="utf-8">
+    <meta name="keywords" content="GitHub,contribution,graph,image,public,png">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- TITLE NAME -->
+    <title>Grass-Graph / Imaging your GitHub Contributions Graph</title><meta name="description" content="Generate PNG image about your GitHub contributions graph by Grass-Graph.">
+
+    <!-- FAVICON  -->
+    <link rel="icon" href="images/favicon/favicon.ico">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="css/font-awesome.css">
+
+    <!-- CSS STYLESHEET -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+
+
+    <!-- HEADER -->
+    <section id="home" class="image-bg">
+        <div class="container">
+            <div class="header">
+                <div class="row">
+                    <div class="col-sm-6">
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="social-icons">
+                            <ul>
+                                <li><a href="https://github.com/a-know/grass-graph" target="_blank" class="fb"><i class="fa fa-github"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="intro">
+                <div class="row">
+                    <div class="col-sm-12">
+                    <div class="intro-content">
+                        <div class="countdown">
+                            <h4>Grass-Graph will generate a PNG image of your <span>GitHub contributions graph</span></h4>
+                        </div>
+                        <div class="intro-heading">
+                            <div class="tlt">
+                                <ul class="texts">
+                                    <li>Let's imaging easily the contribution graph of GitHub!</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="intro-texts">Grass-Graph is a service that can generate a PNG image of a contribution graph of a specific GitHub account. You can also specify the image size, rotation angle, date you want to display.
+                        </p>
+                    </div>
+                </div>
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="subscribe">
+                            <div id="mc-form">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder=" your GitHub ID" id="mc-github-id" required>
+                                    <i class="fa fa-github-alt"></i>
+                                    <span class="input-group-btn">
+                                        <div class="btn btn-default" id="generate-btn">Generate!</div>
+                                    </span>
+                                </div>
+                                <label for="mc-email" id="mc-notification" style="color: white;"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ABOUT -->
+    <section class="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <h2 class="description"><small>The below code is your Grass-Graph image tag.</small></h2>
+                    <input type="text" class="form-control" name="gg-img-tag" id="gg-img-tag" placeholder='<img src="https://grass-graph.moshimo.works/images/a-know.png">' required>
+                    <h5 class="description">
+                        <small>Some options can be specified. For details, please check the bottom of the page.</small>
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES-->
+    <section id="services" class="services section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2" id="gg-img-area">
+                    <img src="https://grass-graph.moshimo.works/images/a-know.png" class="gg-img">
+                    <h2 class='description'><small>a-know's GitHub Contributions Grass-Graph</small></h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ABOUT -->
+    <section id="options" class="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <h2 class="description"><small>Options (params)<br>(These options can be used in combination.)</small></h2>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>key</th>
+                                <th>description</th>
+                                <th>example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">rotate</th>
+                                <td>The angle of image (0 - 360).</td>
+                                <td>https://grass-graph.moshimo.works/images/a-know.png?rotate=270</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">width</th>
+                                <td>The width of image.<br>The unit is pixel.</td>
+                                <td>https://grass-graph.moshimo.works/images/a-know.png?width=568</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">height</th>
+                                <td>The height of image.<br>The unit is pixel.</td>
+                                <td>https://grass-graph.moshimo.works/images/a-know.png?height=88</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">background</th>
+                                <td><span class="new-features">NEW!! (2017-04-15 updated)</span><br>If you want to make the background color transparent, specify "none".</td>
+                                <td>https://grass-graph.moshimo.works/images/a-know.png?background=none</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">date</th>
+                                <td>
+                                  Retrieve the image of the specified date.<br><br>
+                                  This option can return the image by recreating the cache only if you got the image on the specified day in advance.<br>
+                                  Therefore, I recommend you to get graph image everyday.<br>
+                                  (I am embedding image tag in my blog. Because at least one person will visit my blog everyday!)
+                                </td>
+                                <td>https://grass-graph.moshimo.works/images/a-know.png?date=20160701</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12" id="copyright">
+                    <a href="https://github.com/a-know/grass-graph" target="_blank"><img class="img-responsive" src="images/grass-graph-logo.png" alt="logo"/></a>
+                    <p>Copyright &copy; 2016　a-know / moshimo-works All Rights are Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div id="status"></div>
+    </div>
+
+        <!-- JS SCRIPTS FILE -->
+    <script src="js/jquery-1.12.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/lettering.js"></script>
+    <script src="js/jquery.textillate.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/original_contents.js"></script>
+</body>
+</html>

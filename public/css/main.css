@@ -1,0 +1,516 @@
+/*====================================
+	Theme: Rewind - Coming Soon Page
+	Author: appengg.com
+	Version: 1.0.2
+======================================*/
+
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic);
+
+/*=============================================
+		TYPOGRAPHY
+==============================================*/
+
+p {
+    font-size: 14px;
+    margin: 0 !important;
+}
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: "Raleway", sans-serif !important;
+    padding: 0;
+    margin: 0;
+}
+h1 {
+    font-size: 55px;
+}
+h2 {
+    font-size: 38px;
+}
+h3 {
+    font-size: 32px;
+}
+h4 {
+    font-size: 24px;
+}
+h5 {
+    font-size: 18px;
+}
+h2 small {
+    font-size: 60%;
+}
+.btn {
+    background-color: #8BC34A;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border: 0;
+    display: inline-block;
+    text-transform: capitalize;
+    cursor: pointer;
+}
+.btn:hover,
+.btn:focus {
+    background-color: #dab10d;
+    color: #fff;
+}
+.lg-btn {
+    background-color: #8BC34A;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border: 0;
+    display: inline-block;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.lg-btn:hover,
+.lg-btn:focus {
+    background-color: #dab10d;
+    color: #fff;
+}
+
+/*==============================================
+			      GENERAL STYLING
+================================================*/
+
+body,
+html {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+body {
+    font-family: "Open sans", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.4;
+    background: #094429;
+}
+ul,
+ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.section-padding {
+    padding: 25px 0;
+}
+a,
+a:active,
+a:focus,
+a:hover {
+    text-decoration: none;
+    outline: 0;
+}
+.heading h2 {
+    text-align: center;
+    color: #101010;
+    line-height: 1.3;
+    margin-bottom: 130px;
+    font-weight: 300;
+}
+.heading h2 span {
+    color: #8BC34A;
+    text-transform: capitalize;
+    font-weight: 600;
+}
+
+/*==============================================
+			      	HOME
+================================================*/
+
+#home {
+    position: relative;
+}
+#home:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(16, 16, 16, 0.4);
+    top: 0;
+    left: 0;
+    right: 0;
+}
+#home:after {
+    background: linear-gradient(-45deg, #8BC34A 16px, transparent 0), linear-gradient(45deg, #8BC34A 16px, transparent 0);
+    background-position: left-bottom;
+    background-repeat: repeat-x;
+    background-size: 32px 32px;
+    content: " ";
+    display: block;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    height: 32px;
+}
+.image-bg {
+    background-image: url(../images/image-bg/image-bg.jpg);
+    background-position: center;
+    background-size: cover;
+}
+
+/*==============================================
+			      	HEADER
+================================================*/
+
+.header {
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+.header .logo {
+    float: left;
+}
+.header .logo img {
+    width: 150px;
+}
+.header .social-icons {
+    display: block;
+    float: right;
+}
+.header .social-icons ul li {
+    color: #fff;
+    display: inline-block;
+    text-align: center;
+}
+.header .social-icons ul li a {
+    display: block;
+    color: #101010;
+    -moz-border-radius: 40px;
+    -webkit-border-radius: 40px;
+    border-radius: 40px;
+    border: 1px solid transparent;
+    -webkit-transition: background 0.5s ease-in-out;
+    -moz-transition: background 0.5s ease-in-out;
+    -ms-transition: background 0.5s ease-in-out;
+    -o-transition: background 0.5s ease-in-out;
+    transition: background 0.5s ease-in-out;
+    width: 40px;
+    height: 40px;
+    margin: 0 5px;
+    line-height: 40px;
+    font-size: 20px;
+    background: #fff;
+}
+.header .social-icons ul li a:hover,
+.header .social-icons ul li a:active,
+.header .social-icons ul li a:focus {
+    background: #8BC34A;
+}
+@media only screen and (max-width: 768px) {
+    .header .social-icons,
+    .header .logo {
+        float: none;
+        text-align: center;
+    }
+    .header .logo img {
+        margin: 0 auto;
+        display: block;
+        padding-bottom: 20px;
+    }
+}
+
+/*==============================================
+			      INRO CONTENT
+================================================*/
+
+.intro {
+    padding: 75px 0;
+    color: white;
+}
+.intro .countdown span {
+    color: #8BC34A;
+    font-weight: 600;
+}
+.intro .intro-heading .tlt {
+    font-family: 'Raleway', sans-serif;
+    text-transform: capitalize;
+    font-weight: 700;
+    padding: 5px 0 20px;
+    font-size: 55px;
+}
+.intro p.intro-texts {
+    max-width: 920px;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: .5px;
+}
+.intro .subscribe {
+    position: relative;
+    margin: 50px 10px 0;
+    height: 42px;
+    padding: 0;
+}
+.intro .subscribe .form-control {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #fff;
+    color: #333;
+    box-shadow: none;
+    height: 40px;
+    font-weight: 400;
+    padding: 0 1.5em 0 2.2em;
+}
+.intro .subscribe .form-control:focus {
+    border-color: #fff;
+    outline: 0;
+    box-shadow: none;
+}
+.intro .subscribe #mc-form,
+.intro .subscribe #mc-form .btn-default {
+    height: 40px;
+}
+.intro .subscribe #mc-notification {
+    margin: 0.75em 0 0;
+    font-weight: 300;
+    color: #7d7d7d;
+}
+.intro .subscribe .error {
+    color: #f44336 !important;
+}
+.intro .subscribe .valid {
+    color: #f55e25 !important;
+}
+.intro .subscribe .error i,
+.intro .subscribe .valid i {
+    padding-right: .5em;
+}
+.intro .subscribe #mc-form i.fa-github-alt {
+    color: #8BC34A;
+    position: absolute;
+    left: 15px;
+    top: 13px;
+    z-index: 2;
+}
+.intro .subscribe p.notify {
+    padding-top: 5px;
+    color: white;
+    font-style: italic;
+}
+@media only screen and (max-width: 442px) {
+    .intro {
+        padding: 100px 0;
+        text-align: center;
+    }
+    .intro .countdown h4 {
+        font-size: 18px;
+    }
+    .intro .intro-heading .tlt {
+        font-size: 45px;
+    }
+}
+
+/*==============================================
+			      	ABOUT
+================================================*/
+
+.about {
+    position: relative;
+    background: #8BC34A;
+    padding: 10px 0 0 0;
+}
+.about h2 {
+    text-align: center;
+    color: #fff;
+    font-size: 36px;
+    font-weight: 600;
+}
+.about h2 small {
+    color: #101010;
+}
+.about h5 {
+    text-align: center;
+}
+
+/*==============================================
+			      	SERVICES
+================================================*/
+
+.services {
+    text-align: center;
+}
+.services .s-content {
+    text-align: center;
+}
+.services .s-content i {
+    font-size: 24px;
+    color: #8BC34A;
+}
+.services .s-content h4.s-heading {
+    text-transform: capitalize;
+    padding: 20px 0;
+}
+.services .s-content span {
+    display: block;
+    margin: 0 auto;
+    width: 70px;
+    height: 1px;
+    background: #8BC34A;
+}
+.services .s-content p.s-text {
+    padding-top: 20px;
+    letter-spacing: 1px;
+}
+@media only screen and (max-width: 768px) {
+    .services .padding60 {
+        padding-bottom: 60px;
+    }
+}
+
+/*==============================================
+			      	INVESTORS
+================================================*/
+
+.investors {
+    background-image: url(../images/Investors-bg.jpg);
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.investors .heading h2 {
+    color: #fff;
+}
+.investors .investors-logo img:hover,
+.investors .investors-logo img:focus {
+    opacity: 0.8;
+}
+@media only screen and (max-width: 768px) {
+    .investors-logo img {
+        display: block;
+        margin: 0 auto;
+        width: 250px;
+    }
+}
+
+/*==============================================
+			      	CONTACT
+================================================*/
+
+#contact-form > div[class*="for-user-"] > i,
+#mc-form i.fa-envelope-square {
+    position: absolute;
+    left: 25px;
+    top: 21px;
+    z-index: 2;
+}
+.contact-us {
+    background: url(../images/02.jpg) center bottom no-repeat;
+}
+.contact-form .form-control {
+    border-color: #ddd;
+    margin-bottom: 20px;
+    box-shadow: none;
+    padding: 5px 10px 5px 25px;
+}
+.contact-form label.error {
+    margin-bottom: 10px;
+    font-weight: 300;
+    color: #8BC34A;
+}
+#contact-form div[class*="for-user-"] {
+    position: relative;
+}
+.success-cf,
+.error-cf {
+    display: none;
+}
+.contact-form .success-cf p,
+.contact-form .error-cf p {
+    position: absolute;
+    display: block;
+    top: 20%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+    width: 80%;
+    margin: 0 auto !important;
+    padding: 20px 25px;
+    margin-bottom: 0;
+    border-radius: 4px;
+}
+.success-cf p {
+    background: #dff0d8;
+    color: #3c763d;
+    border: 1px solid rgba(60, 118, 61, 0.18);
+}
+.error-cf p {
+    background: #FFE5E5;
+    color: #ea5050;
+    border: 1px solid rgba(169, 82, 82, 0.18);
+}
+.contact-form label.error i,
+.success-cf i,
+.error-cf i {
+    padding-right: 5px;
+}
+.contact-form .form-control.error {
+    border-color: #E7BEBE;
+    color: #D95C5C;
+    border-left: none;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    box-shadow: 5px 0 0 0 #8BC34A inset;
+    margin-bottom: 5px;
+}
+.contact-form .form-control.error:focus {
+    border-color: #ff5050;
+    color: #ff5050;
+    box-shadow: 5px 0 0 0 #FF5050 inset;
+}
+.contact-form .valid {
+    border-color: #2ecc71;
+}
+
+/*==============================================
+			      	FOOTER
+================================================*/
+
+.footer {
+    background: #094429;
+    padding: 30px 0;
+    text-align: center;
+}
+.footer img {
+    display: block;
+    width: 250px;
+    margin: 0 auto;
+}
+.footer p {
+    text-transform: capitalize;
+    padding-top: 20px;
+    color: #fff;
+}
+
+/*=============================================
+				PRELOADER
+=============================================*/
+
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #8BC34A;
+    z-index: 9999;
+    height: 100%;
+}
+#status {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: url(../images/loader.gif) no-repeat center center;
+    margin: auto;
+}

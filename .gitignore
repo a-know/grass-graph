@@ -1,0 +1,4 @@
+vendor/
+*.bin
+.envrc
+assets.go
