@@ -1,0 +1,38 @@
+/*=============================================
+		TYPOGRAPHY
+==============================================*/
+
+p {
+	font-size: $font-size;
+	margin: 0 !important;	
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+	font-family:: $font-heading !important;
+	padding: 0;
+	margin: 0;
+}
+
+h1 {
+	font-size: $h1-font-size;
+}
+
+h2 {
+	font-size: $h2-font-size;
+}
+
+h3 {
+	font-size: $h3-font-size;
+}
+h4 {
+	font-size: $h4-font-size;
+}
+
+h5 {
+	font-size: $h5-font-size;
+
+}

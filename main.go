@@ -12,8 +12,25 @@ import (
 
 func main() {
 	r := chi.NewRouter()
+
 	t := &handlers.TemplateHandler{Filename: "index.html", Assets: Assets}
 	r.Get("/", t.HandleTemplate)
+
+	css := &handlers.AssetsHandler{Kind: "css"}
+	r.Get("/css/*", css.HandleAssets)
+
+	js := &handlers.AssetsHandler{Kind: "js"}
+	r.Get("/js/*", js.HandleAssets)
+
+	fonts := &handlers.AssetsHandler{Kind: "fonts"}
+	r.Get("/fonts/*", fonts.HandleAssets)
+
+	images := &handlers.AssetsHandler{Kind: "images"}
+	r.Get("/images/*", images.HandleAssets)
+
+	plugins := &handlers.AssetsHandler{Kind: "plugins"}
+	r.Get("/plugins/*", plugins.HandleAssets)
+
 	r.Get("/knock", func(w http.ResponseWriter, r *http.Request) {
 		name := os.Getenv("SLACK_BOT_NAME")
 		text := "Visitor Incoming!!\nUA : hoge\nLanguage : fuga"
