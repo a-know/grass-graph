@@ -76,11 +76,11 @@ func (t *Target) parseParams() {
 		if err != nil {
 			// invalid date param
 			t.pastdate = false
-			t.date = time.Now()
+			t.date = time.Now().Add(time.Duration(-10) * time.Minute)
 		}
 	} else {
 		t.pastdate = false
-		t.date = time.Now()
+		t.date = time.Now().Add(time.Duration(-10) * time.Minute)
 	}
 	t.size = fmt.Sprintf("%sx%s", width, height)
 
