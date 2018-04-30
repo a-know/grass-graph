@@ -136,20 +136,8 @@ func (t *Target) extractSvg() {
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 	t.svgData = extractData
 
-	// make destination dir
-	if _, err := os.Stat(tmpDirname); err != nil {
-		if err := os.MkdirAll(tmpDirname, 0777); err != nil {
-			// TODO logger
-		}
-	}
-
 	// output to file
-	file, err := os.Create(t.tmpSvgFilePath)
-	if err != nil {
-		// TODO logger
-	}
-	defer file.Close()
-	file.Write(([]byte)(extractData))
+	flushFile(tmpDirname, t.tmpSvgFilePath, extractData)
 
 	doneUpload := make(chan struct{}, 0)
 	go t.uploadGcs(doneUpload)
@@ -177,8 +165,7 @@ func (t *Target) getPastSvgData() {
 
 	// download svg from gcs
 	bucketname := "gg-on-a-know-home"
-	objpath := fmt.Sprintf("gg-svg-data/%s/%s/%s/%s", t.date.Format("2006"), t.date.Format("01"), t.date.Format("02"), t.githubID[0:1])
-	objname := fmt.Sprintf("%s/%s_%s_graph.svg", objpath, t.githubID, t.date.Format("2006-01-02"))
+	objname := generateObjname(t)
 
 	client, err := storage.NewClient(t.ctx)
 	if err != nil {
@@ -200,25 +187,13 @@ func (t *Target) getPastSvgData() {
 		panic(err)
 	}
 
-	// make destination dir
-	if _, err := os.Stat(tmpDirname); err != nil {
-		if err := os.MkdirAll(tmpDirname, 0777); err != nil {
-			// TODO logger
-		}
-	}
 	// output to file
-	file, err := os.Create(t.tmpSvgFilePath)
-	if err != nil {
-		// TODO logger
-	}
-	defer file.Close()
-	file.Write(([]byte)(slurp))
+	flushFile(tmpDirname, t.tmpSvgFilePath, ((string)(slurp)))
 }
 
 func (t *Target) uploadGcs(uploadGcs chan struct{}) {
 	bucketname := "gg-on-a-know-home"
-	objpath := fmt.Sprintf("gg-svg-data/%s/%s/%s/%s", t.date.Format("2006"), t.date.Format("01"), t.date.Format("02"), t.githubID[0:1])
-	objname := fmt.Sprintf("%s/%s_%s_graph.svg", objpath, t.githubID, t.date.Format("2006-01-02"))
+	objname := generateObjname(t)
 
 	client, err := storage.NewClient(t.ctx)
 	if err != nil {
@@ -268,4 +243,26 @@ func (t *Target) generatePng() {
 			panic(err)
 		}
 	}
+}
+
+func generateObjname(t *Target) string {
+	objpath := fmt.Sprintf("gg-svg-data/%s/%s/%s/%s", t.date.Format("2006"), t.date.Format("01"), t.date.Format("02"), t.githubID[0:1])
+	return fmt.Sprintf("%s/%s_%s_graph.svg", objpath, t.githubID, t.date.Format("2006-01-02"))
+}
+
+func flushFile(dirname string, filepath string, data string) {
+	// make destination dir
+	if _, err := os.Stat(dirname); err != nil {
+		if err := os.MkdirAll(dirname, 0777); err != nil {
+			// TODO logger
+		}
+	}
+
+	// output to file
+	file, err := os.Create(filepath)
+	if err != nil {
+		// TODO logger
+	}
+	defer file.Close()
+	file.Write(([]byte)(data))
 }
