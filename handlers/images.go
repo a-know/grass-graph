@@ -14,26 +14,30 @@ import (
 )
 
 type Target struct {
-	githubID       string
-	svgData        string
-	tmpSvgFilePath string
-	tmpPngFilePath string
+	originalRequestURI string
+	githubID           string
+	svgData            string
+	tmpSvgFilePath     string
+	tmpPngFilePath     string
+	size               string
+	rotate             string
+	transparent        bool
 }
 
 func HandleImages(w http.ResponseWriter, r *http.Request) {
-	t := &Target{githubID: chi.URLParam(r, "githubID")}
+	t := &Target{githubID: chi.URLParam(r, "githubID"), originalRequestURI: r.RequestURI}
+	t.parseParams()
 	t.extractSvg()
+	t.generatePng()
 
-	tmpPngDirname := fmt.Sprintf("tmp/gg_png/%s", time.Now().Format("2006-01-02"))
-	t.tmpPngFilePath = fmt.Sprintf("%s/%s.png", tmpPngDirname, t.githubID)
-	// make destination dir
-	if _, err := os.Stat(tmpPngDirname); err != nil {
-		if err := os.MkdirAll(tmpPngDirname, 0777); err != nil {
-			// TODO logger
-		}
-	}
+	http.ServeFile(w, r, t.tmpPngFilePath)
 
-	u, err := url.Parse(r.RequestURI)
+	// contributions_info := regexp.MustCompile("<span class=\"contrib-number\">(.+)</span>")
+	// group := assined.FindSubmatch(byteArray)
+}
+
+func (t *Target) parseParams() {
+	u, err := url.Parse(t.originalRequestURI)
 	if err != nil {
 		// TODO logger
 		panic(err)
@@ -42,7 +46,7 @@ func HandleImages(w http.ResponseWriter, r *http.Request) {
 
 	width := "720"
 	height := "135"
-	rotate := "0"
+	t.rotate = "0"
 	// TODO validate
 	if query["width"] != nil {
 		width = query["width"][0]
@@ -51,33 +55,15 @@ func HandleImages(w http.ResponseWriter, r *http.Request) {
 		height = query["height"][0]
 	}
 	if query["rotate"] != nil {
-		rotate = query["rotate"][0]
+		t.rotate = query["rotate"][0]
 	}
-	size := fmt.Sprintf("%sx%s", width, height)
+	t.size = fmt.Sprintf("%sx%s", width, height)
 
 	if query["background"] != nil && query["background"][0] == "none" {
-		err = exec.Command("convert", "-geometry", size, "-rotate", rotate, "-transparent", "white", t.tmpSvgFilePath, t.tmpPngFilePath).Run()
+		t.transparent = true
 	} else {
-		err = exec.Command("convert", "-geometry", size, "-rotate", rotate, t.tmpSvgFilePath, t.tmpPngFilePath).Run()
+		t.transparent = false
 	}
-	if err != nil {
-		// TODO logger
-		panic(err)
-	}
-
-	if query["rotate"] != nil {
-		// TODO validate
-		err = exec.Command("mogrify", "-rotate", query["rotate"][0], t.tmpPngFilePath, t.tmpPngFilePath).Run()
-	}
-	if err != nil {
-		// TODO logger
-		panic(err)
-	}
-
-	http.ServeFile(w, r, t.tmpPngFilePath)
-
-	// contributions_info := regexp.MustCompile("<span class=\"contrib-number\">(.+)</span>")
-	// group := assined.FindSubmatch(byteArray)
 }
 
 func (t *Target) extractSvg() {
@@ -139,4 +125,31 @@ func (t *Target) extractSvg() {
 	}
 	defer file.Close()
 	file.Write(([]byte)(extractData))
+}
+
+func (t *Target) generatePng() {
+
+	tmpPngDirname := fmt.Sprintf("tmp/gg_png/%s", time.Now().Format("2006-01-02"))
+	t.tmpPngFilePath = fmt.Sprintf("%s/%s.png", tmpPngDirname, t.githubID)
+	// make destination dir
+	if _, err := os.Stat(tmpPngDirname); err != nil {
+		if err := os.MkdirAll(tmpPngDirname, 0777); err != nil {
+			// TODO logger
+			panic(err)
+		}
+	}
+
+	if t.transparent {
+		err := exec.Command("convert", "-geometry", t.size, "-rotate", t.rotate, "-transparent", "white", t.tmpSvgFilePath, t.tmpPngFilePath).Run()
+		if err != nil {
+			// TODO logger
+			panic(err)
+		}
+	} else {
+		err := exec.Command("convert", "-geometry", t.size, "-rotate", t.rotate, t.tmpSvgFilePath, t.tmpPngFilePath).Run()
+		if err != nil {
+			// TODO logger
+			panic(err)
+		}
+	}
 }
