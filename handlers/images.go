@@ -151,7 +151,18 @@ func (t *Target) extractSvg() {
 	defer file.Close()
 	file.Write(([]byte)(extractData))
 
-	t.uploadGcs()
+	doneUpload := make(chan struct{}, 0)
+	go t.uploadGcs(doneUpload)
+
+	doneNotify := make(chan struct{}, 0)
+	go func() {
+		n := Notification{text: fmt.Sprintf("GitHub ID : %s's Grass-Graph Generated!!\nhttps://github.com/%s", t.githubID, t.githubID)}
+		n.Notify()
+		close(doneNotify)
+	}()
+
+	<-doneUpload
+	<-doneNotify
 }
 
 func (t *Target) getPastSvgData() {
@@ -204,7 +215,7 @@ func (t *Target) getPastSvgData() {
 	file.Write(([]byte)(slurp))
 }
 
-func (t *Target) uploadGcs() {
+func (t *Target) uploadGcs(uploadGcs chan struct{}) {
 	bucketname := "gg-on-a-know-home"
 	objpath := fmt.Sprintf("gg-svg-data/%s/%s/%s/%s", t.date.Format("2006"), t.date.Format("01"), t.date.Format("02"), t.githubID[0:1])
 	objname := fmt.Sprintf("%s/%s_%s_graph.svg", objpath, t.githubID, t.date.Format("2006-01-02"))
@@ -229,6 +240,7 @@ func (t *Target) uploadGcs() {
 		// TODO logger
 		panic(err)
 	}
+	close(uploadGcs)
 }
 
 func (t *Target) generatePng() {
