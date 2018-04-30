@@ -3,3 +3,4 @@ vendor/
 .envrc
 assets.go
 tmp/
+google-service-account.json

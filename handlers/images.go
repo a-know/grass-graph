@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,10 +11,12 @@ import (
 	"regexp"
 	"time"
 
+	"cloud.google.com/go/storage"
 	"github.com/go-chi/chi"
 )
 
 type Target struct {
+	ctx                context.Context
 	originalRequestURI string
 	githubID           string
 	svgData            string
@@ -25,10 +28,18 @@ type Target struct {
 }
 
 func HandleImages(w http.ResponseWriter, r *http.Request) {
-	t := &Target{githubID: chi.URLParam(r, "githubID"), originalRequestURI: r.RequestURI}
+	t := &Target{githubID: chi.URLParam(r, "githubID"), originalRequestURI: r.RequestURI, ctx: r.Context()}
 	t.parseParams()
 	t.extractSvg()
-	t.generatePng()
+
+	doneUpload := make(chan struct{}, 0)
+	go t.uploadGcs(doneUpload)
+
+	doneGeneratePng := make(chan struct{}, 0)
+	go t.generatePng(doneGeneratePng)
+
+	<-doneUpload
+	<-doneGeneratePng
 
 	http.ServeFile(w, r, t.tmpPngFilePath)
 
@@ -127,7 +138,35 @@ func (t *Target) extractSvg() {
 	file.Write(([]byte)(extractData))
 }
 
-func (t *Target) generatePng() {
+func (t *Target) uploadGcs(doneUpload chan struct{}) {
+	bucketname := "gg-on-a-know-home"
+	objpath := fmt.Sprintf("gg-svg-data/%s/%s/%s/%s", time.Now().Format("2006"), time.Now().Format("01"), time.Now().Format("02"), t.githubID[0:1])
+	objname := fmt.Sprintf("%s/%s_%s_graph.svg", objpath, t.githubID, time.Now().Format("2006-01-02"))
+
+	client, err := storage.NewClient(t.ctx)
+	if err != nil {
+		// TODO logger
+		panic(err)
+	}
+
+	// GCS writer
+	writer := client.Bucket(bucketname).Object(objname).NewWriter(t.ctx)
+	writer.ContentType = "image/svg+xml"
+
+	// upload : write object body
+	if _, err := writer.Write(([]byte)(t.svgData)); err != nil {
+		// TODO logger
+		panic(err)
+	}
+
+	if err := writer.Close(); err != nil {
+		// TODO logger
+		panic(err)
+	}
+	close(doneUpload)
+}
+
+func (t *Target) generatePng(doneGeneratePng chan struct{}) {
 
 	tmpPngDirname := fmt.Sprintf("tmp/gg_png/%s", time.Now().Format("2006-01-02"))
 	t.tmpPngFilePath = fmt.Sprintf("%s/%s.png", tmpPngDirname, t.githubID)
@@ -152,4 +191,5 @@ func (t *Target) generatePng() {
 			panic(err)
 		}
 	}
+	close(doneGeneratePng)
 }
