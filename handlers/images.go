@@ -25,26 +25,70 @@ type Target struct {
 	size               string
 	rotate             string
 	transparent        bool
+	date               time.Time
+	pastdate           bool
 }
 
 func HandleImages(w http.ResponseWriter, r *http.Request) {
-	t := &Target{githubID: chi.URLParam(r, "githubID"), originalRequestURI: r.RequestURI, ctx: r.Context()}
+	t := &Target{
+		githubID:           chi.URLParam(r, "githubID"),
+		originalRequestURI: r.RequestURI,
+		ctx:                r.Context(),
+	}
 	t.parseParams()
-	t.extractSvg()
 
-	doneUpload := make(chan struct{}, 0)
-	go t.uploadGcs(doneUpload)
+	if t.pastdate {
+		// get past graph data
+		tmpDirname := fmt.Sprintf("tmp/gg_svg/%s", t.date.Format("2006-01-02"))
+		t.tmpSvgFilePath = fmt.Sprintf("%s/%s.svg", tmpDirname, t.githubID)
 
-	doneGeneratePng := make(chan struct{}, 0)
-	go t.generatePng(doneGeneratePng)
+		if _, err := os.Stat(t.tmpSvgFilePath); err != nil {
+			// download svg from gcs
+			bucketname := "gg-on-a-know-home"
+			objpath := fmt.Sprintf("gg-svg-data/%s/%s/%s/%s", t.date.Format("2006"), t.date.Format("01"), t.date.Format("02"), t.githubID[0:1])
+			objname := fmt.Sprintf("%s/%s_%s_graph.svg", objpath, t.githubID, t.date.Format("2006-01-02"))
 
-	<-doneUpload
-	<-doneGeneratePng
+			client, err := storage.NewClient(t.ctx)
+			if err != nil {
+				// TODO logger
+				panic(err)
+			}
+
+			// GCS reader
+			rc, err := client.Bucket(bucketname).Object(objname).NewReader(t.ctx)
+			if err != nil {
+				// TODO logger
+				panic(err)
+			}
+			defer rc.Close()
+
+			slurp, err := ioutil.ReadAll(rc)
+			if err != nil {
+				// TODO logger
+				panic(err)
+			}
+
+			// make destination dir
+			if _, err := os.Stat(tmpDirname); err != nil {
+				if err := os.MkdirAll(tmpDirname, 0777); err != nil {
+					// TODO logger
+				}
+			}
+			// output to file
+			file, err := os.Create(t.tmpSvgFilePath)
+			if err != nil {
+				// TODO logger
+			}
+			defer file.Close()
+			file.Write(([]byte)(slurp))
+		}
+	} else {
+		t.extractSvg()
+	}
+
+	t.generatePng()
 
 	http.ServeFile(w, r, t.tmpPngFilePath)
-
-	// contributions_info := regexp.MustCompile("<span class=\"contrib-number\">(.+)</span>")
-	// group := assined.FindSubmatch(byteArray)
 }
 
 func (t *Target) parseParams() {
@@ -68,6 +112,19 @@ func (t *Target) parseParams() {
 	if query["rotate"] != nil {
 		t.rotate = query["rotate"][0]
 	}
+	if query["date"] != nil {
+		t.pastdate = true
+		dateLayout := "20060102"
+		t.date, err = time.Parse(dateLayout, query["date"][0])
+		if err != nil {
+			// invalid date param
+			t.pastdate = false
+			t.date = time.Now()
+		}
+	} else {
+		t.pastdate = false
+		t.date = time.Now()
+	}
 	t.size = fmt.Sprintf("%sx%s", width, height)
 
 	if query["background"] != nil && query["background"][0] == "none" {
@@ -78,7 +135,7 @@ func (t *Target) parseParams() {
 }
 
 func (t *Target) extractSvg() {
-	tmpDirname := fmt.Sprintf("tmp/gg_svg/%s", time.Now().Format("2006-01-02"))
+	tmpDirname := fmt.Sprintf("tmp/gg_svg/%s", t.date.Format("2006-01-02"))
 	t.tmpSvgFilePath = fmt.Sprintf("%s/%s.svg", tmpDirname, t.githubID)
 
 	if _, err := os.Stat(t.tmpSvgFilePath); err == nil {
@@ -136,12 +193,14 @@ func (t *Target) extractSvg() {
 	}
 	defer file.Close()
 	file.Write(([]byte)(extractData))
+
+	t.uploadGcs()
 }
 
-func (t *Target) uploadGcs(doneUpload chan struct{}) {
+func (t *Target) uploadGcs() {
 	bucketname := "gg-on-a-know-home"
-	objpath := fmt.Sprintf("gg-svg-data/%s/%s/%s/%s", time.Now().Format("2006"), time.Now().Format("01"), time.Now().Format("02"), t.githubID[0:1])
-	objname := fmt.Sprintf("%s/%s_%s_graph.svg", objpath, t.githubID, time.Now().Format("2006-01-02"))
+	objpath := fmt.Sprintf("gg-svg-data/%s/%s/%s/%s", t.date.Format("2006"), t.date.Format("01"), t.date.Format("02"), t.githubID[0:1])
+	objname := fmt.Sprintf("%s/%s_%s_graph.svg", objpath, t.githubID, t.date.Format("2006-01-02"))
 
 	client, err := storage.NewClient(t.ctx)
 	if err != nil {
@@ -163,12 +222,11 @@ func (t *Target) uploadGcs(doneUpload chan struct{}) {
 		// TODO logger
 		panic(err)
 	}
-	close(doneUpload)
 }
 
-func (t *Target) generatePng(doneGeneratePng chan struct{}) {
+func (t *Target) generatePng() {
 
-	tmpPngDirname := fmt.Sprintf("tmp/gg_png/%s", time.Now().Format("2006-01-02"))
+	tmpPngDirname := fmt.Sprintf("tmp/gg_png/%s", t.date.Format("2006-01-02"))
 	t.tmpPngFilePath = fmt.Sprintf("%s/%s.png", tmpPngDirname, t.githubID)
 	// make destination dir
 	if _, err := os.Stat(tmpPngDirname); err != nil {
@@ -191,5 +249,4 @@ func (t *Target) generatePng(doneGeneratePng chan struct{}) {
 			panic(err)
 		}
 	}
-	close(doneGeneratePng)
 }
