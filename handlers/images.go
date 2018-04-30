@@ -38,50 +38,7 @@ func HandleImages(w http.ResponseWriter, r *http.Request) {
 	t.parseParams()
 
 	if t.pastdate {
-		// get past graph data
-		tmpDirname := fmt.Sprintf("tmp/gg_svg/%s", t.date.Format("2006-01-02"))
-		t.tmpSvgFilePath = fmt.Sprintf("%s/%s.svg", tmpDirname, t.githubID)
-
-		if _, err := os.Stat(t.tmpSvgFilePath); err != nil {
-			// download svg from gcs
-			bucketname := "gg-on-a-know-home"
-			objpath := fmt.Sprintf("gg-svg-data/%s/%s/%s/%s", t.date.Format("2006"), t.date.Format("01"), t.date.Format("02"), t.githubID[0:1])
-			objname := fmt.Sprintf("%s/%s_%s_graph.svg", objpath, t.githubID, t.date.Format("2006-01-02"))
-
-			client, err := storage.NewClient(t.ctx)
-			if err != nil {
-				// TODO logger
-				panic(err)
-			}
-
-			// GCS reader
-			rc, err := client.Bucket(bucketname).Object(objname).NewReader(t.ctx)
-			if err != nil {
-				// TODO logger
-				panic(err)
-			}
-			defer rc.Close()
-
-			slurp, err := ioutil.ReadAll(rc)
-			if err != nil {
-				// TODO logger
-				panic(err)
-			}
-
-			// make destination dir
-			if _, err := os.Stat(tmpDirname); err != nil {
-				if err := os.MkdirAll(tmpDirname, 0777); err != nil {
-					// TODO logger
-				}
-			}
-			// output to file
-			file, err := os.Create(t.tmpSvgFilePath)
-			if err != nil {
-				// TODO logger
-			}
-			defer file.Close()
-			file.Write(([]byte)(slurp))
-		}
+		t.getPastSvgData()
 	} else {
 		t.extractSvg()
 	}
@@ -195,6 +152,56 @@ func (t *Target) extractSvg() {
 	file.Write(([]byte)(extractData))
 
 	t.uploadGcs()
+}
+
+func (t *Target) getPastSvgData() {
+	// get past graph data
+	tmpDirname := fmt.Sprintf("tmp/gg_svg/%s", t.date.Format("2006-01-02"))
+	t.tmpSvgFilePath = fmt.Sprintf("%s/%s.svg", tmpDirname, t.githubID)
+
+	if _, err := os.Stat(t.tmpSvgFilePath); err == nil {
+		// svg data file already exist
+		return
+	}
+
+	// download svg from gcs
+	bucketname := "gg-on-a-know-home"
+	objpath := fmt.Sprintf("gg-svg-data/%s/%s/%s/%s", t.date.Format("2006"), t.date.Format("01"), t.date.Format("02"), t.githubID[0:1])
+	objname := fmt.Sprintf("%s/%s_%s_graph.svg", objpath, t.githubID, t.date.Format("2006-01-02"))
+
+	client, err := storage.NewClient(t.ctx)
+	if err != nil {
+		// TODO logger
+		panic(err)
+	}
+
+	// GCS reader
+	rc, err := client.Bucket(bucketname).Object(objname).NewReader(t.ctx)
+	if err != nil {
+		// TODO logger
+		panic(err)
+	}
+	defer rc.Close()
+
+	slurp, err := ioutil.ReadAll(rc)
+	if err != nil {
+		// TODO logger
+		panic(err)
+	}
+
+	// make destination dir
+	if _, err := os.Stat(tmpDirname); err != nil {
+		if err := os.MkdirAll(tmpDirname, 0777); err != nil {
+			// TODO logger
+		}
+	}
+	// output to file
+	file, err := os.Create(t.tmpSvgFilePath)
+	if err != nil {
+		// TODO logger
+	}
+	defer file.Close()
+	file.Write(([]byte)(slurp))
 }
 
 func (t *Target) uploadGcs() {
