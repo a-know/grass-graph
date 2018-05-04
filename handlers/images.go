@@ -73,15 +73,30 @@ func (t *Target) parseParams() error {
 	width := "720"
 	height := "135"
 	t.rotate = "0"
-	// TODO validate
+
 	if query["width"] != nil {
-		width = query["width"][0]
+		if regexp.MustCompile(`[^0-9]`).Match([]byte(query["width"][0])) {
+			// invalid param, replace valid value
+			width = "720"
+		} else {
+			width = query["width"][0]
+		}
 	}
 	if query["height"] != nil {
-		height = query["height"][0]
+		if regexp.MustCompile(`[^0-9]`).Match([]byte(query["height"][0])) {
+			// invalid param, replace valid value
+			height = "135"
+		} else {
+			height = query["height"][0]
+		}
 	}
 	if query["rotate"] != nil {
-		t.rotate = query["rotate"][0]
+		if regexp.MustCompile(`[^0-9]`).Match([]byte(query["rotate"][0])) {
+			// invalid param, replace valid value
+			t.rotate = "0"
+		} else {
+			t.rotate = query["rotate"][0]
+		}
 	}
 	if query["date"] != nil {
 		t.pastdate = true
