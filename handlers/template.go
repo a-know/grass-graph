@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"io/ioutil"
+	"log"
 	"net/http"
 	"path/filepath"
 	"sync"
@@ -23,13 +24,15 @@ func (t *TemplateHandler) HandleTemplate(w http.ResponseWriter, r *http.Request)
 	t.once.Do(func() {
 		f, err := t.Assets.Open(filepath.Join("/public", t.Filename))
 		if err != nil {
-			//TODO logger
+			log.Printf("could not open assets file : %v", err)
+			w.WriteHeader(http.StatusNotFound)
 		}
 		defer f.Close()
 
 		data, err := ioutil.ReadAll(f)
 		if err != nil {
-			//TODO logger
+			log.Printf("could not read assets file : %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
 		}
 
 		var ns = template.New("template")
