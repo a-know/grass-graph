@@ -119,21 +119,18 @@ func (t *Target) extractSvg() error {
 		url := fmt.Sprintf("https://github.com/%s", t.githubID)
 		resp, err := http.Get(url)
 		if err != nil {
-			// TODO retry
 			log.Printf("could not get github profile page response : %v", err)
 			return err
 		}
 		defer resp.Body.Close()
 
 		if resp.StatusCode == 404 {
-			// TODO retry
 			log.Println("could not get github profile page response")
 			return err
 		}
 
 		byteArray, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			// TODO retry
 			log.Printf("could not get github profile page response : %v", err)
 			return err
 		}
