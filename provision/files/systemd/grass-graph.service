@@ -1,0 +1,20 @@
+[Unit]
+Description=grass-graph service
+
+[Service]
+Type=simple # 起動したタイミングでsystemdは起動完了とみなしてくれる、forking type もある
+ExecStart=/bin/sh -c 'exec /var/www/grass-graph/app/ggg.bin > /var/www/grass-graph/log/production.log'
+ExecStop=/bin/kill -SIGTERM $MAINPID
+ExecReload=/bin/kill -SIGTERM $MAINPID && /bin/sh -c 'exec /var/www/grass-graph/app/ggg.bin > /var/www/grass-graph/log/production.log'
+Restart = always
+
+[Install]
+# 「WantedBy/RequiredBy」は、「systemctl enable」コマンドで自動起動を有効化した際に、
+# どのUnitの前提として設定されるべきかを指定する。
+# たとえば、「WantedBy=multi-user.target」とした場合、「multi-user.target.wants」ディレクトリ内に
+# この設定ファイルへのシンボリックリンクが作成される。
+# 一般的なサービスの場合は、multi-user.target（旧来のrunlevel 3に相当）、もしくは、
+# graphical.target（runlevel 5に相当）を指定する。
+#
+# see. http://enakai00.hatenablog.com/entry/20130917/1379374797
+WantedBy = multi-user.target
