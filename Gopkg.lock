@@ -16,6 +16,12 @@
   version = "v0.21.0"
 
 [[projects]]
+  name = "github.com/Songmu/retry"
+  packages = ["."]
+  revision = "3a202b1bab4254860f7f71d04c28133026100493"
+  version = "v0.0.1"
+
+[[projects]]
   name = "github.com/go-chi/chi"
   packages = ["."]
   revision = "e83ac2304db3c50cf03d96a2fcd39009d458bc35"
@@ -191,6 +197,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d7ab3e1a376c7887cd27b87a04356b5bbbfcd1d8cbb8d4ad8d9c3040173d0ccd"
+  inputs-digest = "4f6df69646cb26ed4077401fc7201b839f0b3322442e994e1b0f8e412ffed9b9"
   solver-name = "gps-cdcl"
   solver-version = 1

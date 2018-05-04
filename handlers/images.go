@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"cloud.google.com/go/storage"
+	"github.com/Songmu/retry"
 	"github.com/go-chi/chi"
 )
 
@@ -113,29 +114,36 @@ func (t *Target) extractSvg() error {
 		return nil
 	}
 
-	// TODO retry
+	var byteArray []byte
+	err := retry.Retry(5, 1*time.Second, func() error {
+		url := fmt.Sprintf("https://github.com/%s", t.githubID)
+		resp, err := http.Get(url)
+		if err != nil {
+			// TODO retry
+			log.Printf("could not get github profile page response : %v", err)
+			return err
+		}
+		defer resp.Body.Close()
 
-	url := fmt.Sprintf("https://github.com/%s", t.githubID)
-	resp, err := http.Get(url)
+		if resp.StatusCode == 404 {
+			// TODO retry
+			log.Println("could not get github profile page response")
+			return err
+		}
+
+		byteArray, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			// TODO retry
+			log.Printf("could not get github profile page response : %v", err)
+			return err
+		}
+		return nil
+	})
 	if err != nil {
-		// TODO retry
-		log.Printf("could not get github profile page response : %v", err)
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == 404 {
-		// TODO retry
-		log.Println("could not get github profile page response")
+		log.Printf("could not get github profile page response (retry count exceeded): %v", err)
 		return err
 	}
 
-	byteArray, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		// TODO retry
-		log.Printf("could not get github profile page response : %v", err)
-		return err
-	}
 	pageResponse := string(byteArray)
 
 	repexp := regexp.MustCompile(`^[\s\S]+<svg.+class="js-calendar-graph-svg">`)
