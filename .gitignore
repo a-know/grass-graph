@@ -4,3 +4,6 @@ vendor/
 assets.go
 tmp/
 google-service-account.json
+
+# itamae-secrets
+/provision/secret/keys/
