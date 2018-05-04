@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -19,11 +20,14 @@ func HandleKnock(w http.ResponseWriter, r *http.Request) {
 
 	if admin != "true" {
 		n := &Notification{text: fmt.Sprintf("Visitor Incoming!!\nUA : %s\nLanguage : %s", ua, lang)}
-		n.Notify()
+		err := n.Notify()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 	}
 }
 
-func (n *Notification) Notify() {
+func (n *Notification) Notify() error {
 	name := os.Getenv("SLACK_BOT_NAME")
 	channel := os.Getenv("SLACK_CHANNEL_NAME")
 
@@ -36,7 +40,8 @@ func (n *Notification) Notify() {
 	)
 
 	if err != nil {
-		fmt.Print(err)
+		log.Printf("could not request to slack webhook : %v", err)
+		return err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -44,9 +49,11 @@ func (n *Notification) Notify() {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Print(err)
+		log.Printf("could not request to slack webhook : %v", err)
+		return err
 	}
 
-	fmt.Print(resp)
 	defer resp.Body.Close()
+
+	return nil
 }

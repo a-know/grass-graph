@@ -1,0 +1,2 @@
+# for deploy
+package 'rsync'

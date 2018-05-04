@@ -1,0 +1,9 @@
+/var/www/grass-graph/log/production.log {
+  daily
+  rotate 7
+  missingok
+  sharedscripts
+  notifempty
+  compress
+  copytruncate
+}

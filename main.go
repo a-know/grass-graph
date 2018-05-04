@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -42,5 +43,6 @@ func main() {
 
 	r.Post("/knock", handlers.HandleKnock)
 
+	log.Printf("grass-graph started.")
 	http.ListenAndServe(":8080", r)
 }
