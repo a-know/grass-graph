@@ -3,9 +3,10 @@ Description=grass-graph service
 
 [Service]
 Type=simple # 起動したタイミングでsystemdは起動完了とみなしてくれる、forking type もある
-ExecStart=/bin/sh -c 'exec /var/www/grass-graph/app/ggg.bin > /var/www/grass-graph/log/production.log'
+EnvironmentFile=/etc/sysconfig/grass-graph
+ExecStart=/bin/sh -c 'exec /var/www/grass-graph/app/ggg.bin >> /var/www/grass-graph/log/production.log 2>&1'
 ExecStop=/bin/kill -SIGTERM $MAINPID
-ExecReload=/bin/kill -SIGTERM $MAINPID && /bin/sh -c 'exec /var/www/grass-graph/app/ggg.bin > /var/www/grass-graph/log/production.log'
+ExecReload=/bin/kill -SIGTERM $MAINPID && /bin/sh -c 'exec /var/www/grass-graph/app/ggg.bin >> /var/www/grass-graph/log/production.log 2>&1'
 Restart = always
 
 [Install]
