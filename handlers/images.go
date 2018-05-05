@@ -131,7 +131,7 @@ func (t *Target) extractSvg() error {
 
 	var byteArray []byte
 	err := retry.Retry(5, 1*time.Second, func() error {
-		url := fmt.Sprintf("https://github.com/%s", t.githubID)
+		url := fmt.Sprintf("https://github.com/users/%s/contributions", t.githubID)
 		resp, err := http.Get(url)
 		if err != nil {
 			log.Printf("could not get github profile page response : %s, %v", url, err)
@@ -158,7 +158,7 @@ func (t *Target) extractSvg() error {
 
 	pageResponse := string(byteArray)
 
-	repexp := regexp.MustCompile(`^[\s\S]+<svg.+class="js-calendar-graph-svg">`)
+	repexp := regexp.MustCompile(`^<svg.+class="js-calendar-graph-svg">`)
 	repcnd := `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="135" class="js-calendar-graph-svg"><rect x="0" y="0" width="720" height="135" fill="white" stroke="none"/>`
 	extractData := repexp.ReplaceAllString(pageResponse, repcnd)
 
