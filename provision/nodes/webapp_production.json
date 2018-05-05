@@ -14,6 +14,11 @@
     "mackerel": {
         "service_role": "grass-graph:webapp"
     },
+    "td-agent": {
+        "nginx_log_conf": {
+            "dataset_name": "ggg_nginx_log"
+        }
+    },
     "recipes": [
       "./roles/base.rb",
       "./roles/external-cooperation.rb"
