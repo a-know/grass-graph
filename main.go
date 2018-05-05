@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/a-know/grass-graph-go/handlers"
+	"github.com/fukata/golang-stats-api-handler"
 	"github.com/go-chi/chi"
 )
 
@@ -40,6 +41,9 @@ func main() {
 
 	plugins := &handlers.AssetsHandler{Kind: "plugins"}
 	r.Get("/plugins/*", plugins.HandleAssets)
+
+	// for monitoring
+	r.Get("/api/stats", stats_api.Handler)
 
 	r.Post("/knock", handlers.HandleKnock)
 

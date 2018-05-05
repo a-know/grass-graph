@@ -134,19 +134,19 @@ func (t *Target) extractSvg() error {
 		url := fmt.Sprintf("https://github.com/%s", t.githubID)
 		resp, err := http.Get(url)
 		if err != nil {
-			log.Printf("could not get github profile page response : %v", err)
+			log.Printf("could not get github profile page response : %s, %v", url, err)
 			return err
 		}
 		defer resp.Body.Close()
 
 		if resp.StatusCode == 404 {
-			log.Println("could not get github profile page response")
+			log.Printf("could not get github profile page response : %s", url)
 			return err
 		}
 
 		byteArray, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Printf("could not get github profile page response : %v", err)
+			log.Printf("could not get github profile page response : %s, %v", url, err)
 			return err
 		}
 		return nil
@@ -290,13 +290,13 @@ func (t *Target) generatePng() error {
 	if t.transparent {
 		err := exec.Command("convert", "-geometry", t.size, "-rotate", t.rotate, "-transparent", "white", t.tmpSvgFilePath, t.tmpPngFilePath).Run()
 		if err != nil {
-			log.Printf("failed to run convert command : %v", err)
+			log.Printf("failed to run convert command : %s, %v", t.tmpSvgFilePath, err)
 			return err
 		}
 	} else {
 		err := exec.Command("convert", "-geometry", t.size, "-rotate", t.rotate, t.tmpSvgFilePath, t.tmpPngFilePath).Run()
 		if err != nil {
-			log.Printf("failed to run convert command : %v", err)
+			log.Printf("failed to run convert command : %s, %v", t.tmpSvgFilePath, err)
 			return err
 		}
 	}
