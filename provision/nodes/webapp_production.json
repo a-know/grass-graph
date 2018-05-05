@@ -11,7 +11,11 @@
         ]
     },
     "hostname": "ggg01",
+    "mackerel": {
+        "service_role": "grass-graph:webapp"
+    },
     "recipes": [
-      "./roles/base.rb"
+      "./roles/base.rb",
+      "./roles/external-cooperation.rb"
     ]
 }
