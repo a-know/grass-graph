@@ -22,6 +22,12 @@
   version = "v0.0.1"
 
 [[projects]]
+  name = "github.com/fukata/golang-stats-api-handler"
+  packages = ["."]
+  revision = "90f0b59102629831cc109845475a8d77043412ec"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/go-chi/chi"
   packages = ["."]
   revision = "e83ac2304db3c50cf03d96a2fcd39009d458bc35"
@@ -197,6 +203,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4f6df69646cb26ed4077401fc7201b839f0b3322442e994e1b0f8e412ffed9b9"
+  inputs-digest = "46bea9a17f591af1fbc80868df326e5f923cf8fae00756291af42cd4d915d3fa"
   solver-name = "gps-cdcl"
   solver-version = 1
