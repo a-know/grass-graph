@@ -247,10 +247,8 @@ func (t *Target) uploadGcs(uploadGcs chan struct{}) error {
 
 	client, err := storage.NewClient(t.ctx)
 	if err != nil {
-		if err != nil {
-			log.Printf("could not create gcs client : %v", err)
-			return err
-		}
+		log.Printf("could not create gcs client : %v", err)
+		return err
 	}
 
 	// GCS writer
@@ -259,17 +257,13 @@ func (t *Target) uploadGcs(uploadGcs chan struct{}) error {
 
 	// upload : write object body
 	if _, err := writer.Write(([]byte)(t.svgData)); err != nil {
-		if err != nil {
-			log.Printf("could not write object body : %v", err)
-			return err
-		}
+		log.Printf("could not write object body : %v", err)
+		return err
 	}
 
 	if err := writer.Close(); err != nil {
-		if err != nil {
-			log.Printf("could not close gcs writer : %v", err)
-			return err
-		}
+		log.Printf("could not close gcs writer : %v", err)
+		return err
 	}
 	close(uploadGcs)
 	return nil
