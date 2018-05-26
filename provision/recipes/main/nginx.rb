@@ -14,14 +14,6 @@ package 'nginx' do
     options '--enablerepo=nginx'
 end
 
-remote_file '/etc/nginx/dropip.conf' do
-    owner "root"
-    group "root"
-    mode '0644'
-    source "../../files/nginx/dropip.conf"
-    notifies :reload, "service[nginx]"
-end
-
 remote_file '/etc/nginx/nginx.conf' do
     owner "root"
     group "root"
