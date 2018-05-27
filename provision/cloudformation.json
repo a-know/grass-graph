@@ -253,6 +253,37 @@
         ]
       }
     },
+    "BluePublicEC2Instance01": {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "ImageId" : "ami-91c4d3ed",
+        "InstanceType" : "t2.nano",
+        "KeyName" : "for-new-aws",
+        "Tags" : [
+          { "Key" : "Name", "Value" : "blue-ggg01" }
+        ],
+        "BlockDeviceMappings" : [
+          {
+            "DeviceName" : "/dev/sda1",
+            "Ebs" : {
+              "DeleteOnTermination" : true,
+              "VolumeSize" : "10",
+              "VolumeType" : "gp2"
+            }
+          }
+        ],
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": "true",
+            "DeviceIndex": "0",
+            "DeleteOnTermination" : "true",
+            "PrivateIpAddress" : "10.0.1.10",
+            "SubnetId": { "Ref" : "BluePublicSubnet" },
+            "GroupSet": [ { "Ref" : "SecurityGroupForPublic" } ]
+          }
+        ]
+      }
+    },
     "BluePublicEC2Instance02": {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
