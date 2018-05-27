@@ -1,4 +1,5 @@
 include_recipe '../recipes/main/user.rb'
+include_recipe '../recipes/main/mkswap.rb'
 include_recipe '../recipes/main/selinux.rb'
 include_recipe '../recipes/main/hostname.rb'
 include_recipe '../recipes/main/tools.rb'
