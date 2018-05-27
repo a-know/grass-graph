@@ -1,0 +1,345 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Mappings": {
+    "ELBLogger": {
+      "us-east-1":      { "AccountID": "127311923021" },
+      "us-west-2":      { "AccountID": "797873946194" },
+      "us-west-1":      { "AccountID": "027434742980" },
+      "eu-west-1":      { "AccountID": "156460612806" },
+      "ap-southeast-1": { "AccountID": "114774131450" },
+      "ap-southeast-2": { "AccountID": "783225319266" },
+      "ap-northeast-1": { "AccountID": "582318560864" },
+      "sa-east-1":      { "AccountID": "507241528517" },
+      "us-gov-west-1":  { "AccountID": "048591011584" }
+    }
+  },
+  "Parameters" : {
+    "ECRReadOnlyIAMUserPassword" : {
+      "NoEcho" : "true",
+      "Type" : "String",
+      "Description" : "Password for ECR Readonly IAM User",
+      "MinLength" : "12",
+      "MaxLength" : "24",
+      "ConstraintDescription" : "the password must be between 12 and 24 characters"
+    }
+  },
+  "Resources" : {
+    "ECRReadOnlyIAMGroup" : {
+       "Type": "AWS::IAM::Group",
+       "Properties": {
+          "GroupName": "ECRReadOnlyIAMGroup",
+          "Policies": [
+            {
+              "PolicyDocument" : {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Action": [
+                      "ecr:GetAuthorizationToken",
+                      "ecr:BatchCheckLayerAvailability",
+                      "ecr:GetDownloadUrlForLayer",
+                      "ecr:GetRepositoryPolicy",
+                      "ecr:DescribeRepositories",
+                      "ecr:ListImages",
+                      "ecr:DescribeImages",
+                      "ecr:BatchGetImage"
+                    ],
+                    "Resource": "*"
+                  }
+                ]
+              },
+              "PolicyName" : "AmazonEC2ContainerRegistryReadOnly"
+            }
+          ]
+       }
+    },
+    "ECRReadOnlyIAMUser" : {
+      "Type": "AWS::IAM::User",
+      "Properties" : {
+        "LoginProfile" : {
+          "Password" : { "Ref" : "ECRReadOnlyIAMUserPassword" }
+        }
+      }
+    },
+    "IAMUserToGroupAddition" : {
+      "Type": "AWS::IAM::UserToGroupAddition",
+      "Properties" : {
+        "GroupName" : "ECRReadOnlyIAMGroup",
+        "Users" : [{ "Ref" : "ECRReadOnlyIAMUser" }]
+      }
+    },
+    "MainVPC" : {
+      "Type" : "AWS::EC2::VPC",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "EnableDnsSupport" : "true",
+        "EnableDnsHostnames" : "true",
+        "InstanceTenancy" : "default",
+        "Tags" : [ {"Key" : "Name", "Value" : "メインVPC領域"} ]
+      }
+    },
+    "BluePublicSubnet" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "MainVPC" },
+        "CidrBlock" : "10.0.1.0/24",
+        "AvailabilityZone" : "ap-northeast-1a",
+        "Tags" : [ { "Key" : "Name", "Value" : "パブリックサブネット（青）" } ]
+      }
+    },
+    "GreenPublicSubnet" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "MainVPC" },
+        "CidrBlock" : "10.0.2.0/24",
+        "AvailabilityZone" : "ap-northeast-1c",
+        "Tags" : [ { "Key" : "Name", "Value" : "パブリックサブネット（緑）" } ]
+      }
+    },
+    "MainIGW" : {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+        "Tags" : [ {"Key" : "Name", "Value" : "メインインターネットゲートウェイ"}]
+      }
+    },
+    "AttachMainIGW" : {
+      "Type" : "AWS::EC2::VPCGatewayAttachment",
+      "Properties" : {
+        "VpcId" : { "Ref" : "MainVPC" },
+        "InternetGatewayId" : { "Ref" : "MainIGW" }
+      }
+    },
+    "BluePublicRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "MainVPC" },
+        "Tags" : [ { "Key" : "Name", "Value" : "パブリックルートテーブル（青）" } ]
+      }
+    },
+    "GreenPublicRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "MainVPC" },
+        "Tags" : [ { "Key" : "Name", "Value" : "パブリックルートテーブル（緑）" } ]
+      }
+    },
+    "AttachBluePublicRouteTableToBluePublicSubnet" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "BluePublicRouteTable" },
+        "SubnetId" : { "Ref" : "BluePublicSubnet" }
+      }
+    },
+    "AttachGreenPublicRouteTableToGreenPublicSubnet" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "GreenPublicRouteTable" },
+        "SubnetId" : { "Ref" : "GreenPublicSubnet" }
+      }
+    },
+    "BluePublicRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "BluePublicRouteTable" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "MainIGW" }
+      }
+    },
+    "GreenPublicRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "GreenPublicRouteTable" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "MainIGW" }
+      }
+    },
+    "SecurityGroupForLb": {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "SecurityGroup for load balancer",
+        "SecurityGroupIngress" : [
+          {
+             "IpProtocol" : "tcp",
+             "FromPort" : "22",
+             "ToPort" : "22",
+             "CidrIp" : "0.0.0.0/0"
+          },
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "80",
+            "ToPort" : "80",
+            "CidrIp" : "0.0.0.0/0"
+          },
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "443",
+            "ToPort" : "443",
+            "CidrIp" : "0.0.0.0/0"
+          },
+          {
+            "IpProtocol" : "icmp",
+            "FromPort" : "-1",
+            "ToPort" : "-1",
+            "CidrIp" : "0.0.0.0/0"
+          }
+        ],
+        "Tags" :  [ { "Key" : "Name", "Value" : "LB-SG" } ],
+        "VpcId" : { "Ref" : "MainVPC" }
+      }
+    },
+    "SecurityGroupForPublic": {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "SecurityGroup for web-server instance in public-subnet",
+        "SecurityGroupIngress" : [
+          {
+             "IpProtocol" : "tcp",
+             "FromPort" : "22",
+             "ToPort" : "22",
+             "CidrIp" : "0.0.0.0/0"
+          },
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "80",
+            "ToPort" : "80",
+            "SourceSecurityGroupId" : { "Ref" : "SecurityGroupForLb" }
+          },
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "443",
+            "ToPort" : "443",
+            "SourceSecurityGroupId" : { "Ref" : "SecurityGroupForLb" }
+          },
+          {
+            "IpProtocol" : "icmp",
+            "FromPort" : "-1",
+            "ToPort" : "-1",
+            "SourceSecurityGroupId" : { "Ref" : "SecurityGroupForLb" }
+          }
+        ],
+        "Tags" :  [ { "Key" : "Name", "Value" : "WEB-SG" } ],
+        "VpcId" : { "Ref" : "MainVPC" }
+      }
+    },
+    "BluePublicEC2Instance01": {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "ImageId" : "ami-eec1c380",
+        "InstanceType" : "t2.micro",
+        "KeyName" : "for-new-aws",
+        "Tags" : [
+          { "Key" : "Name", "Value" : "Web（青・Ruby2.4.0・SSD）" }
+        ],
+        "BlockDeviceMappings" : [
+          {
+            "DeviceName" : "/dev/sda1",
+            "Ebs" : {
+              "DeleteOnTermination" : true,
+              "VolumeSize" : "10",
+              "VolumeType" : "gp2"
+            }
+          }
+        ],
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": "true",
+            "DeviceIndex": "0",
+            "DeleteOnTermination" : "true",
+            "PrivateIpAddress" : "10.0.1.10",
+            "SubnetId": { "Ref" : "BluePublicSubnet" },
+            "GroupSet": [ { "Ref" : "SecurityGroupForPublic" } ]
+          }
+        ]
+      }
+    },
+    "BluePublicEC2Instance02": {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "ImageId" : "ami-91c4d3ed",
+        "InstanceType" : "t2.micro",
+        "KeyName" : "for-new-aws",
+        "Tags" : [
+          { "Key" : "Name", "Value" : "Web（青・Golang・SSD）" }
+        ],
+        "BlockDeviceMappings" : [
+          {
+            "DeviceName" : "/dev/sda1",
+            "Ebs" : {
+              "DeleteOnTermination" : true,
+              "VolumeSize" : "10",
+              "VolumeType" : "gp2"
+            }
+          }
+        ],
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": "true",
+            "DeviceIndex": "0",
+            "DeleteOnTermination" : "true",
+            "PrivateIpAddress" : "10.0.1.11",
+            "SubnetId": { "Ref" : "BluePublicSubnet" },
+            "GroupSet": [ { "Ref" : "SecurityGroupForPublic" } ]
+          }
+        ]
+      }
+    },
+    "ElasticLoadBalancer": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "Scheme": "internet-facing",
+        "SecurityGroups": [ { "Ref" : "SecurityGroupForLb" } ],
+        "LoadBalancerName" : "ElasticLoadBalancer",
+        "Subnets" : [ { "Ref" : "BluePublicSubnet" }, { "Ref" : "GreenPublicSubnet" } ],
+        "Instances" : [ { "Ref" : "BluePublicEC2Instance02" } ],
+        "Tags" : [
+          { "Key" : "Name", "Value" : "ELB" }
+        ],
+        "Listeners": [
+          {
+            "LoadBalancerPort": "80",
+            "InstancePort": "80",
+            "Protocol": "HTTP"
+          }
+        ],
+        "HealthCheck": {
+          "Target": "HTTP:80/",
+          "HealthyThreshold": "3",
+          "UnhealthyThreshold": "5",
+          "Interval": "300",
+          "Timeout": "5"
+        },
+        "AccessLoggingPolicy": {
+          "Enabled" : "true",
+          "S3BucketName" : { "Ref":"ELBLogBucket" }
+        }
+      }
+    },
+    "ELBLogBucket" : {
+      "Type" : "AWS::S3::Bucket",
+      "DeletionPolicy" : "Retain"
+    },
+    "ELBLogBucketPolicy" : {
+      "Type" : "AWS::S3::BucketPolicy",
+      "Properties" : {
+        "Bucket" : { "Ref" : "ELBLogBucket" },
+        "PolicyDocument" : {
+          "Id" : "ELBLogBucketPolicy",
+          "Statement" : [
+            {
+              "Sid" : "WriteAccess",
+              "Action" : [ "s3:PutObject" ],
+              "Effect" : "Allow",
+              "Resource" : {
+                "Fn::Join" : [ "", [ "arn:aws:s3:::", { "Ref" : "ELBLogBucket" } , "/AWSLogs/", { "Ref" : "AWS::AccountId" }, "/*" ] ]
+              },
+              "Principal" : {
+                "AWS" : { "Fn::FindInMap" : [ "ELBLogger", { "Ref": "AWS::Region" }, "AccountID" ] }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
