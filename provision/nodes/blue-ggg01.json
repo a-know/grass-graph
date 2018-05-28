@@ -1,0 +1,26 @@
+{
+    "user": {
+        "id": "a-know",
+        "uid": "a-know",
+        "gid": "a-know",
+        "password": "$6$T068FNlrpdI/zpVd$6jxpwiq2fqW3uKzFW1kIOHhDeUavaqwZ.5MJDYqw.Lhd6sP2IHhbOuJQiVFiMK8pioFpb5dY624PUSAXYGZgD1",
+        "home": "/home/a-know",
+        "shell": "/bin/bash",
+        "authorized_keys": [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/ZZ0rIx+tWsWi7GbFZYkbUkQascXY5p9K/DKx3vRqANXp4YNkqLlkhI2oJIfMCcjWoUJI1aZSOp+T9hx5jo/R46EnzZAtAnzXENgK9sqolJk08bTGOaGOqIKUk7i+HXVet8CEUiv6xczuo61zZYrjr0TmVZAmPY03fiFpt6YJ+oDiv9aKkDhzFiPjnIP0pq1gxVu4deyA4/oPYkpJFxmbphF+0BjCViaStSGmQfZH7W6TqUGJ2QJVi3xC86PbYjZven/8phNbSS9ief+P62mFz9CfLmseCMIg3NiSFi19DrxqMgYYfIcfI6MbOdG/SWp04Fwg82Mx54uylUrLKQxt a-know@a-know-no-MacBook-Pro.local"
+        ]
+    },
+    "hostname": "blue-ggg01",
+    "mackerel": {
+        "service_role": "grass-graph:webapp"
+    },
+    "td-agent": {
+        "nginx_log_conf": {
+            "dataset_name": "ggg_nginx_log"
+        }
+    },
+    "recipes": [
+      "./roles/base.rb",
+      "./roles/external-cooperation.rb"
+    ]
+}

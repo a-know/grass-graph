@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/a-know/grass-graph-go/handlers"
+	"github.com/a-know/grass-graph/handlers"
 	"github.com/fukata/golang-stats-api-handler"
 	"github.com/go-chi/chi"
 )
