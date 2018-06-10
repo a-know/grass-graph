@@ -59,4 +59,14 @@ remote_file '/etc/mackerel-agent/conf.d/metric-plugins.conf' do
   source "../../files/mackerel/metric-plugins.conf"
   notifies :restart, 'service[mackerel-agent]'
 end
+
+# for kazeburo script plugin
+package 'perl'
+
+remote_file '/etc/mackerel-agent/periodic-checker' do
+  owner 'root'
+  group 'root'
+  mode '0755'
+  source "../../files/mackerel/periodic-checker"
+end
   

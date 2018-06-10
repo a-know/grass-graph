@@ -1,0 +1,42 @@
+#!/usr/bin/perl
+# https://github.com/kazeburo/custom-mackerel-plugins/blob/master/periodic-checker
+
+use strict;
+use warnings;
+use Getopt::Long;
+
+my $ranges = "00:00-24:00";
+my $critical = 1;
+Getopt::Long::Configure ("no_ignore_case");
+my $r = GetOptions(
+    'ranges=s' => \$ranges,
+    "h|help"     => \my $help,
+);
+
+my @command = @ARGV;
+$|=1;
+
+if ( !@command || $help || !defined $ranges) {
+    print qq!usage: $0 --ranges 00:00-06:00,06:30-24:00 -- command args1 args2 args3\n!;
+    exit($help ? 0 : 1);
+}
+
+my @lt = localtime;
+my $now = sprintf("%02d%02d",$lt[2],$lt[1]) + 0;
+my @hours;
+for $r (split /,/, $ranges) {
+    if ( $r =~ /^(\d\d):(\d\d)-(\d\d):(\d\d)$/ ) {
+         my $start = "$1$2" + 0;
+         my $end = "$3$4" + 0;
+         if ( $start <= $now && $now <= $end ) {
+              exec(@command);
+              exit(1); # not come here
+         }
+    }
+    else {
+         die "incorrect time ranges: $ranges";
+    }
+}
+
+print "OK: out of time ranges: $ranges [".sprintf("%02d:%02d",$lt[2],$lt[1])."]\n";
+exit(0);
