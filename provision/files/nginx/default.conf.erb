@@ -7,6 +7,10 @@ server {
 
     add_header Strict-Transport-Security "max-age=2592000; includeSubdomains";
 
+    if ($request_method !~ ^(GET)$ ) {
+        rewrite ^(.*)$ https://grass-graph.moshimo.works/ redirect;
+    }
+
     location ~ /(jmx-console|GponForm|wls-wsat|webdav|muieblackcat|manager|cgi-bin|jbossass|shopdb|dbadmin|2phpmyadmin|mysql|PMA|myadmin|pma|myadmin|phpmyAdmin|database|program|phppma|phpmy|MyAdmin|administrator) {
         rewrite ^(.*)$ https://grass-graph.moshimo.works/ redirect;
     }
