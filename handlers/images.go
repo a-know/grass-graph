@@ -122,7 +122,7 @@ func (t *Target) parseParams() error {
 }
 
 func (t *Target) extractSvg() error {
-	tmpDirname := fmt.Sprintf("tmp/gg_svg/%s", t.date.Format("2006-01-02"))
+	tmpDirname := fmt.Sprintf("/var/www/grass-graph/goofys-s3/gg_svg/%s", t.date.Format("2006-01-02"))
 	t.tmpSvgFilePath = fmt.Sprintf("%s/%s.svg", tmpDirname, t.githubID)
 
 	if _, err := os.Stat(t.tmpSvgFilePath); err == nil {
@@ -203,7 +203,7 @@ func (t *Target) extractSvg() error {
 
 func (t *Target) getPastSvgData() error {
 	// get past graph data
-	tmpDirname := fmt.Sprintf("tmp/gg_svg/%s", t.date.Format("2006-01-02"))
+	tmpDirname := fmt.Sprintf("/var/www/grass-graph/goofys-s3/gg_svg/%s", t.date.Format("2006-01-02"))
 	t.tmpSvgFilePath = fmt.Sprintf("%s/%s.svg", tmpDirname, t.githubID)
 
 	if _, err := os.Stat(t.tmpSvgFilePath); err == nil {
@@ -271,11 +271,11 @@ func (t *Target) uploadGcs(uploadGcs chan struct{}) error {
 
 func (t *Target) generatePng() error {
 
-	tmpPngDirname := fmt.Sprintf("tmp/gg_png/%s", t.date.Format("2006-01-02"))
+	tmpPngDirname := fmt.Sprintf("/var/www/grass-graph/goofys-s3/gg_png/%s", t.date.Format("2006-01-02"))
 	t.tmpPngFilePath = fmt.Sprintf("%s/%s.png", tmpPngDirname, t.githubID)
 	// make destination dir
 	if _, err := os.Stat(tmpPngDirname); err != nil {
-		if err := os.MkdirAll(tmpPngDirname, 0777); err != nil {
+		if err := os.Mkdir(tmpPngDirname, 0777); err != nil {
 			log.Printf("could not create direcotry : %v", err)
 			return err
 		}
@@ -305,7 +305,7 @@ func generateObjname(t *Target) string {
 func flushFile(dirname string, filepath string, data string) error {
 	// make destination dir
 	if _, err := os.Stat(dirname); err != nil {
-		if err := os.MkdirAll(dirname, 0777); err != nil {
+		if err := os.Mkdir(dirname, 0777); err != nil {
 			log.Printf("could not crate tmp directory : %v", err)
 			return err
 		}
