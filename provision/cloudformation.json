@@ -54,6 +54,61 @@
           ]
        }
     },
+    "S3AccessIAMRole": {
+        "Type": "AWS::IAM::Role",
+        "Properties": {
+            "AssumeRolePolicyDocument": {
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": [
+                                "ec2.amazonaws.com"
+                            ]
+                        },
+                        "Action": [
+                            "sts:AssumeRole"
+                        ]
+                    }
+                ]
+            },
+            "Path": "/"
+        }
+    },
+    "S3AccessIAMPolicy": {
+        "Type": "AWS::IAM::Policy",
+        "Properties": {
+            "PolicyName": "S3AccessIAMPolicy",
+            "PolicyDocument": {
+                "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": "s3:*",
+                      "Resource": [
+                        "arn:aws:s3:::for-grass-graph",
+                        "arn:aws:s3:::for-grass-graph/*"
+                      ]
+                    }
+                ]
+            },
+            "Roles": [
+                {
+                    "Ref": "S3AccessIAMRole"
+                }
+            ]
+        }
+    },
+    "S3AccessIAMInstanceProfile": {
+        "Type": "AWS::IAM::InstanceProfile",
+        "Properties": {
+            "Path": "/",
+            "Roles": [
+                {
+                    "Ref": "S3AccessIAMRole"
+                }
+            ]
+        }
+    },
     "ECRReadOnlyIAMUser" : {
       "Type": "AWS::IAM::User",
       "Properties" : {
@@ -250,7 +305,8 @@
             "SubnetId": { "Ref" : "GreenPublicSubnet" },
             "GroupSet": [ { "Ref" : "SecurityGroupForPublic" } ]
           }
-        ]
+        ],
+        "IamInstanceProfile": { "Ref" : "S3AccessIAMInstanceProfile" }
       }
     },
     "BluePublicEC2Instance01": {
@@ -281,7 +337,8 @@
             "SubnetId": { "Ref" : "BluePublicSubnet" },
             "GroupSet": [ { "Ref" : "SecurityGroupForPublic" } ]
           }
-        ]
+        ],
+        "IamInstanceProfile": { "Ref" : "S3AccessIAMInstanceProfile" }
       }
     },
     "ElasticLoadBalancer": {
