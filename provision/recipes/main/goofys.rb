@@ -7,9 +7,9 @@ end
 
 execute 'make directory for goofys s3 mount' do
     command <<-EOC
-    mkdir -m 0755 -p /var/www/grass-graph/s3
-    chown a-know:a-know /var/www/grass-graph/s3
-    /usr/local/bin/goofys for-grass-graph /var/www/grass-graph/s3
+    mkdir -m 0755 -p /var/www/grass-graph/goofys-s3
+    chown a-know:a-know /var/www/grass-graph/goofys-s3
+    sudo -u a-know /usr/local/bin/goofys for-grass-graph /var/www/grass-graph/goofys-s3
     EOC
-    not_if "sudo -u a-know df -h | grep s3"
+    not_if "sudo -u a-know df -h | grep goofys-s3"
 end
