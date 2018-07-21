@@ -46,7 +46,9 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header Host $http_host;
+        proxy_cache zone1;
         proxy_redirect off;
+        add_header X-Nginx-Cache $upstream_cache_status;
     }
 
     location ~ /(css|images|js|fonts|plugins) {
@@ -78,6 +80,8 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header Host $http_host;
+        proxy_cache zone1;
         proxy_redirect off;
+        add_header X-Nginx-Cache $upstream_cache_status;
     }
 }
