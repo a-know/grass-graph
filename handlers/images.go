@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -23,7 +24,9 @@ type Target struct {
 	githubID           string
 	svgData            string
 	tmpSvgFilePath     string
+	goofysSvgFilePath  string
 	tmpPngFilePath     string
+	goofysPngFilePath  string
 	size               string
 	rotate             string
 	transparent        bool
@@ -122,16 +125,26 @@ func (t *Target) parseParams() error {
 }
 
 func (t *Target) extractSvg() error {
-	tmpDirname := fmt.Sprintf("/var/www/grass-graph/goofys-s3/gg_svg/%s", t.date.Format("2006-01-02"))
+	tmpDirname := fmt.Sprintf("/tmp/gg_svg/%s", t.date.Format("2006-01-02"))
 	t.tmpSvgFilePath = fmt.Sprintf("%s/%s.svg", tmpDirname, t.githubID)
+	goofysDirname := fmt.Sprintf("/var/www/grass-graph/goofys-s3/gg_svg/%s", t.date.Format("2006-01-02"))
+	t.goofysSvgFilePath = fmt.Sprintf("%s/%s.svg", goofysDirname, t.githubID)
 
 	if _, err := os.Stat(t.tmpSvgFilePath); err == nil {
 		return nil
 	}
 
+	if _, err := os.Stat(t.goofysSvgFilePath); err == nil {
+		err := copyFile(tmpDirname, t.tmpSvgFilePath, t.goofysSvgFilePath)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
 	var byteArray []byte
 	err := retry.Retry(5, 1*time.Second, func() error {
-		url := fmt.Sprintf("https://github.com/users/%s/contributions", t.githubID)
+		url := fmt.Sprintf("https://github.com/%s", t.githubID)
 		resp, err := http.Get(url)
 		if err != nil {
 			log.Printf("could not get github profile page response : %s, %v", url, err)
@@ -158,7 +171,7 @@ func (t *Target) extractSvg() error {
 
 	pageResponse := string(byteArray)
 
-	repexp := regexp.MustCompile(`^<svg.+class="js-calendar-graph-svg">`)
+	repexp := regexp.MustCompile(`^[\s\S]+<svg.+class="js-calendar-graph-svg">`)
 	repcnd := `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="135" class="js-calendar-graph-svg"><rect x="0" y="0" width="720" height="135" fill="white" stroke="none"/>`
 	extractData := repexp.ReplaceAllString(pageResponse, repcnd)
 
@@ -174,10 +187,19 @@ func (t *Target) extractSvg() error {
 	t.svgData = extractData
 
 	// output to file
-	err = flushFile(tmpDirname, t.tmpSvgFilePath, extractData)
-	if err != nil {
-		return err
-	}
+	doneFlushFile := make(chan struct{}, 0)
+	go func() error {
+		err := flushFile(tmpDirname, t.tmpSvgFilePath, extractData)
+		if err != nil {
+			return err
+		}
+		err = flushFile(goofysDirname, t.goofysSvgFilePath, extractData)
+		if err != nil {
+			return err
+		}
+		close(doneFlushFile)
+		return nil
+	}()
 
 	doneUpload := make(chan struct{}, 0)
 	go func() error {
@@ -195,6 +217,7 @@ func (t *Target) extractSvg() error {
 		close(doneNotify)
 	}()
 
+	<-doneFlushFile
 	<-doneUpload
 	<-doneNotify
 
@@ -271,8 +294,23 @@ func (t *Target) uploadGcs(uploadGcs chan struct{}) error {
 
 func (t *Target) generatePng() error {
 
-	tmpPngDirname := fmt.Sprintf("/var/www/grass-graph/goofys-s3/gg_png/%s", t.date.Format("2006-01-02"))
+	tmpPngDirname := fmt.Sprintf("/tmp/gg_png/%s", t.date.Format("2006-01-02"))
 	t.tmpPngFilePath = fmt.Sprintf("%s/%s.png", tmpPngDirname, t.githubID)
+	goofysPngDirname := fmt.Sprintf("/var/www/grass-graph/goofys-s3/gg_png/%s", t.date.Format("2006-01-02"))
+	t.goofysPngFilePath = fmt.Sprintf("%s/%s.png", goofysPngDirname, t.githubID)
+
+	if _, err := os.Stat(t.tmpPngFilePath); err == nil {
+		return nil
+	}
+
+	if _, err := os.Stat(t.goofysPngFilePath); err == nil {
+		err := copyFile(tmpPngDirname, t.tmpPngFilePath, t.goofysPngFilePath)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
 	// make destination dir
 	if _, err := os.Stat(tmpPngDirname); err != nil {
 		if err := os.Mkdir(tmpPngDirname, 0777); err != nil {
@@ -293,6 +331,10 @@ func (t *Target) generatePng() error {
 			log.Printf("failed to run convert command : %s, %v", t.tmpSvgFilePath, err)
 			return err
 		}
+	}
+	err := copyFile(goofysPngDirname, t.goofysPngFilePath, t.tmpPngFilePath)
+	if err != nil {
+		return err
 	}
 	return nil
 }
@@ -319,5 +361,37 @@ func flushFile(dirname string, filepath string, data string) error {
 	}
 	defer file.Close()
 	file.Write(([]byte)(data))
+	return nil
+}
+
+func copyFile(dirname string, destFilepath string, sourceFilepath string) error {
+	// make destination dir
+	if _, err := os.Stat(dirname); err != nil {
+		if err := os.Mkdir(dirname, 0777); err != nil {
+			log.Printf("could not crate tmp directory : %v", err)
+			return err
+		}
+	}
+
+	src, err := os.Open(sourceFilepath)
+	if err != nil {
+		log.Printf("could not open source svg file : %v", err)
+		return err
+	}
+	defer src.Close()
+
+	dst, err := os.Create(destFilepath)
+	if err != nil {
+		log.Printf("could not create destination svg file : %v", err)
+		return err
+	}
+	defer dst.Close()
+
+	// copy file
+	_, err = io.Copy(dst, src)
+	if err != nil {
+		log.Printf("could not copy svg file : %v", err)
+		return err
+	}
 	return nil
 }
