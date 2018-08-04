@@ -171,7 +171,14 @@ func (t *Target) extractSvg() error {
 
 	pageResponse := string(byteArray)
 
-	repexp := regexp.MustCompile(`^[\s\S]+<svg.+class="js-calendar-graph-svg">`)
+	// consider timeout response
+	repexp := regexp.MustCompile(`too long to load`)
+	if repexp.MatchString(pageResponse) {
+		log.Printf("Probably, a timeout occurred. GitHub ID is %s .", t.githubID)
+		return err
+	}
+
+	repexp = regexp.MustCompile(`^[\s\S]+<svg.+class="js-calendar-graph-svg">`)
 	repcnd := `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="135" class="js-calendar-graph-svg"><rect x="0" y="0" width="720" height="135" fill="white" stroke="none"/>`
 	extractData := repexp.ReplaceAllString(pageResponse, repcnd)
 
