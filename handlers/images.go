@@ -320,7 +320,7 @@ func (t *Target) generatePng() error {
 
 	// make destination dir
 	if _, err := os.Stat(tmpPngDirname); err != nil {
-		if err := os.Mkdir(tmpPngDirname, 0777); err != nil {
+		if err := os.MkdirAll(tmpPngDirname, 0777); err != nil {
 			log.Printf("could not create direcotry : %v", err)
 			return err
 		}
@@ -354,7 +354,7 @@ func generateObjname(t *Target) string {
 func flushFile(dirname string, filepath string, data string) error {
 	// make destination dir
 	if _, err := os.Stat(dirname); err != nil {
-		if err := os.Mkdir(dirname, 0777); err != nil {
+		if err := os.MkdirAll(dirname, 0777); err != nil {
 			log.Printf("could not crate tmp directory : %v", err)
 			return err
 		}
@@ -374,7 +374,7 @@ func flushFile(dirname string, filepath string, data string) error {
 func copyFile(dirname string, destFilepath string, sourceFilepath string) error {
 	// make destination dir
 	if _, err := os.Stat(dirname); err != nil {
-		if err := os.Mkdir(dirname, 0777); err != nil {
+		if err := os.MkdirAll(dirname, 0777); err != nil {
 			log.Printf("could not crate tmp directory : %v", err)
 			return err
 		}
