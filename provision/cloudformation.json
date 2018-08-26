@@ -277,14 +277,14 @@
         "VpcId" : { "Ref" : "MainVPC" }
       }
     },
-    "GreenPublicEC2Instance01": {
+    "GreenPublicEC2Instance02": {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
-        "ImageId" : "ami-91c4d3ed",
-        "InstanceType" : "t2.nano",
+        "ImageId" : "ami-8e8847f1",
+        "InstanceType" : "t3.nano",
         "KeyName" : "for-new-aws",
         "Tags" : [
-          { "Key" : "Name", "Value" : "green-ggg01" }
+          { "Key" : "Name", "Value" : "green-ggg02" }
         ],
         "BlockDeviceMappings" : [
           {
@@ -296,12 +296,15 @@
             }
           }
         ],
+        "CreditSpecification": {
+          "CPUCredits": "standard"
+        },
         "NetworkInterfaces": [
           {
             "AssociatePublicIpAddress": "true",
             "DeviceIndex": "0",
             "DeleteOnTermination" : "true",
-            "PrivateIpAddress" : "10.0.2.10",
+            "PrivateIpAddress" : "10.0.2.11",
             "SubnetId": { "Ref" : "GreenPublicSubnet" },
             "GroupSet": [ { "Ref" : "SecurityGroupForPublic" } ]
           }
@@ -309,14 +312,14 @@
         "IamInstanceProfile": { "Ref" : "S3AccessIAMInstanceProfile" }
       }
     },
-    "BluePublicEC2Instance01": {
+    "BluePublicEC2Instance02": {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
-        "ImageId" : "ami-91c4d3ed",
-        "InstanceType" : "t2.nano",
+        "ImageId" : "ami-8e8847f1",
+        "InstanceType" : "t3.nano",
         "KeyName" : "for-new-aws",
         "Tags" : [
-          { "Key" : "Name", "Value" : "blue-ggg01" }
+          { "Key" : "Name", "Value" : "blue-ggg02" }
         ],
         "BlockDeviceMappings" : [
           {
@@ -328,12 +331,15 @@
             }
           }
         ],
+        "CreditSpecification": {
+          "CPUCredits": "standard"
+        },
         "NetworkInterfaces": [
           {
             "AssociatePublicIpAddress": "true",
             "DeviceIndex": "0",
             "DeleteOnTermination" : "true",
-            "PrivateIpAddress" : "10.0.1.10",
+            "PrivateIpAddress" : "10.0.1.11",
             "SubnetId": { "Ref" : "BluePublicSubnet" },
             "GroupSet": [ { "Ref" : "SecurityGroupForPublic" } ]
           }
@@ -348,7 +354,7 @@
         "SecurityGroups": [ { "Ref" : "SecurityGroupForLb" } ],
         "LoadBalancerName" : "ElasticLoadBalancer",
         "Subnets" : [ { "Ref" : "BluePublicSubnet" }, { "Ref" : "GreenPublicSubnet" } ],
-        "Instances" : [ { "Ref" : "BluePublicEC2Instance01" }, { "Ref" : "GreenPublicEC2Instance01" } ],
+        "Instances" : [ { "Ref" : "BluePublicEC2Instance02" }, { "Ref" : "GreenPublicEC2Instance02" } ],
         "Tags" : [
           { "Key" : "Name", "Value" : "ELB" }
         ],
