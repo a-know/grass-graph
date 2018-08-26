@@ -23,7 +23,8 @@ service 'td-agent'
 ).each do |gem|
   gem_package gem do
     gem_binary '/opt/td-agent/embedded/bin/fluent-gem'
-    options '--no-rdoc --no-ri'
+    # options ['--no-ri', '--no-rdoc']
+    options '--no-document'
     notifies :restart, 'service[td-agent]'
   end
 end
