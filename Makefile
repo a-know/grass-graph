@@ -7,6 +7,9 @@ run:
 assets:
 	go-assets-builder --package=main public/ > assets.go
 
+user:
+	bundle exec itamae ssh -h ${TARGET} -j provision/nodes/${TARGET}.json -u centos provision/provisioning.rb
+
 provisioning:
 	bundle exec itamae ssh -h ${TARGET} -j provision/nodes/${TARGET}.json -u a-know provision/provisioning.rb
 
