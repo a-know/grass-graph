@@ -302,9 +302,9 @@ func (t *Target) uploadGcs(uploadGcs chan struct{}) error {
 func (t *Target) generatePng() error {
 
 	tmpPngDirname := fmt.Sprintf("/tmp/gg_png/%s", t.date.Format("2006-01-02"))
-	t.tmpPngFilePath = fmt.Sprintf("%s/%s.png", tmpPngDirname, t.githubID)
+	t.tmpPngFilePath = fmt.Sprintf("%s/%s-%s-%s-%s-%s.png", tmpPngDirname, t.githubID, t.size, t.rotate, t.transparent)
 	goofysPngDirname := fmt.Sprintf("/var/www/grass-graph/goofys-s3/gg_png/%s", t.date.Format("2006-01-02"))
-	t.goofysPngFilePath = fmt.Sprintf("%s/%s.png", goofysPngDirname, t.githubID)
+	t.goofysPngFilePath = fmt.Sprintf("%s/%s-%s-%s-%s-%s.png", goofysPngDirname, t.githubID, t.githubID, t.size, t.rotate, t.transparent)
 
 	if _, err := os.Stat(t.tmpPngFilePath); err == nil {
 		return nil
