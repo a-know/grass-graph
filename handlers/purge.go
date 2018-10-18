@@ -9,7 +9,7 @@ import (
 
 // PurgeParam :
 type PurgeParam struct {
-	PurgeCacheURL string `json:"purgeCacheURL"`
+	PurgeCacheURLs []string `json:"purgeCacheURLs"`
 }
 
 // HandlePurgeRequest :
@@ -42,20 +42,23 @@ func HandlePurgeRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// send purge request
-	req, err := http.NewRequest("PURGE", param.PurgeCacheURL, nil)
-	if err != nil {
-		log.Printf("Failed to init request: %s", err.Error())
-		w.WriteHeader(http.StatusOK)
-		return
+	for idx := range param.PurgeCacheURLs {
+		req, err := http.NewRequest("PURGE", param.PurgeCacheURLs[idx], nil)
+		if err != nil {
+			log.Printf("Failed to init request: %s", err.Error())
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		client := new(http.Client)
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Printf("Failed to send purge request: %s", err.Error())
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		// log.Printf("PURGE Target: %s", param.PurgeCacheURLs[idx])
+		defer resp.Body.Close()
 	}
-	client := new(http.Client)
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("Failed to send purge request: %s", err.Error())
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-	defer resp.Body.Close()
 	w.WriteHeader(http.StatusOK)
 	return
 }
