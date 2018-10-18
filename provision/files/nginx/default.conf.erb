@@ -7,8 +7,15 @@ server {
 
     add_header Strict-Transport-Security "max-age=2592000; includeSubdomains";
 
-    if ($request_method !~ ^(GET)$ ) {
-        rewrite ^(.*)$ https://grass-graph.moshimo.works/ redirect;
+    location ~ /pixela/purge {
+        proxy_pass   http://localhost:8080;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $http_host;
+        proxy_cache zone1;
+        proxy_redirect off;
+        add_header X-Nginx-Cache $upstream_cache_status;
     }
 
     location ~ /(jmx-console|GponForm|wls-wsat|webdav|muieblackcat|manager|cgi-bin|jbossass|shopdb|dbadmin|2phpmyadmin|mysql|PMA|myadmin|pma|myadmin|phpmyAdmin|database|program|phppma|phpmy|MyAdmin|administrator|splas-boomerang) {
