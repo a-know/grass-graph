@@ -8,9 +8,6 @@ Generate a PNG image of the specified GitHub account's public contribution graph
 
 [Grass-Graph / Imaging your GitHub Contributions Graph](https://grass-graph.moshimo.works/)
 
-### Alerts occurrence frequency (Powered by Pixela https://pixe.la )
-![](https://pixe.la/v1/users/grass-graph/graphs/alerts)
-
 ## More
 
 In Japanese.
