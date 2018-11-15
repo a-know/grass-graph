@@ -47,8 +47,9 @@ func main() {
 
 	r.Post("/knock", handlers.HandleKnock)
 
-	// for Pixela
-	r.Post("/pixela/purge", handlers.HandlePurgeRequest)
+	// for Pixela SVG convert to PNG
+	// /pixela/convert?username=a-know&graphID=test-graph&date=yyyyMMdd&mode=short&stage=dev&hash=xxxxx
+	r.Get("/pixela/convert", handlers.HandleSVGConvert)
 
 	log.Printf("grass-graph started.")
 	http.ListenAndServe(":8080", r)
