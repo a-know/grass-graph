@@ -66,9 +66,9 @@ func HandleSVGConvert(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// treat params
-	var paramsStr string
+	paramsStr := "?"
 	if param.Date != "" {
-		paramsStr = fmt.Sprintf("?date=%s", param.Date)
+		paramsStr = fmt.Sprintf("%sdate=%s", paramsStr, param.Date)
 	}
 	if param.Mode != "" {
 		paramsStr = fmt.Sprintf("%s&mode=%s", paramsStr, param.Mode)
