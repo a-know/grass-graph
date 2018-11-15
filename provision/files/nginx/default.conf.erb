@@ -7,7 +7,7 @@ server {
 
     add_header Strict-Transport-Security "max-age=2592000; includeSubdomains";
 
-    location ~ /pixela/purge {
+    location ~ /pixela/convert {
         proxy_pass   http://localhost:8080;
         proxy_set_header X-Forwarded-Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
