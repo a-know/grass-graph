@@ -47,9 +47,6 @@ func main() {
 
 	r.Post("/knock", handlers.HandleKnock)
 
-	// for Pixela
-	r.Post("/pixela/purge", handlers.HandlePurgeRequest)
-
 	log.Printf("grass-graph started.")
 	http.ListenAndServe(":8080", r)
 }
