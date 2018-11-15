@@ -1,11 +1,14 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
+	"os"
+	"os/exec"
+	"time"
 )
 
 // ConvertParam :
@@ -15,18 +18,51 @@ type ConvertParam struct {
 	Date     string `json:"date"`
 	Mode     string `json:"mode"`
 	Stage    string `json:"stage"`
-	Hash string `json:"hash"`
+	Hash     string `json:"hash"`
 }
 
 // HandleSVGConvert :
 func HandleSVGConvert(w http.ResponseWriter, r *http.Request) {
-	// unmarshal
-	var param ConvertParam
-	err = json.Unmarshal(b, &param)
+	u, err := url.Parse(r.RequestURI)
 	if err != nil {
 		log.Printf("Failed to unmarshal params: %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
+	}
+	query := u.Query()
+
+	var username string
+	if query["username"] != nil {
+		username = query["username"][0]
+	}
+	var graphID string
+	if query["graphID"] != nil {
+		graphID = query["graphID"][0]
+	}
+	var date string
+	if query["date"] != nil {
+		date = query["date"][0]
+	}
+	var mode string
+	if query["mode"] != nil {
+		mode = query["mode"][0]
+	}
+	var stage string
+	if query["stage"] != nil {
+		stage = query["stage"][0]
+	}
+	var hash string
+	if query["hash"] != nil {
+		hash = query["hash"][0]
+	}
+
+	param := &ConvertParam{
+		Username: username,
+		GraphID:  graphID,
+		Date:     date,
+		Mode:     mode,
+		Stage:    stage,
+		Hash:     hash,
 	}
 
 	// treat params
@@ -43,7 +79,7 @@ func HandleSVGConvert(w http.ResponseWriter, r *http.Request) {
 	if param.Stage == "dev" {
 		url = fmt.Sprintf("https://www-dev-215102.appspot.com/v1/users/%s/graphs/%s%s", param.Username, param.GraphID, paramsStr)
 	} else {
-		url = fmt.Sprintf("https://pixela/v1/users/%s/graphs/%s%s", param.Username, param.GraphID, paramsStr)
+		url = fmt.Sprintf("https://pixe.la/v1/users/%s/graphs/%s%s", param.Username, param.GraphID, paramsStr)
 	}
 
 	resp, err := http.Get(url)
@@ -60,7 +96,7 @@ func HandleSVGConvert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	byteArray, err = ioutil.ReadAll(resp.Body)
+	byteArray, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Printf("could not get svg response : %s, %v", url, err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -69,11 +105,13 @@ func HandleSVGConvert(w http.ResponseWriter, r *http.Request) {
 	extractData := string(byteArray)
 
 	// flush to file
-	tmpDirname := fmt.Sprintf("/tmp/pixela-svg/%s", t.date.Format("2006-01-02"))
-	tmpSvgFilePath = fmt.Sprintf("%s/%s.svg", tmpDirname, param.Hash)
-	err := flushFile(tmpDirname, t.tmpSvgFilePath, extractData)
+	tmpDirname := fmt.Sprintf("/tmp/pixela-svg/%s", time.Now().Format("2006-01-02"))
+	tmpSvgFilePath := fmt.Sprintf("%s/%s.svg", tmpDirname, param.Hash)
+	err = flushFile(tmpDirname, tmpSvgFilePath, extractData)
 	if err != nil {
-		return err
+		log.Printf("failed to flush file : %s, %v", url, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	// convert
@@ -83,11 +121,21 @@ func HandleSVGConvert(w http.ResponseWriter, r *http.Request) {
 	} else {
 		size = fmt.Sprintf("%sx%s", "720", "135")
 	}
-	tmpPngDirname := fmt.Sprintf("/tmp/pixela-png/%s", t.date.Format("2006-01-02"))
-	tmpPngFilePath = fmt.Sprintf("%s/%s.png", tmpPngDirname, param.Hash)
-	err := exec.Command("convert", "-geometry", t.size, tmpSvgFilePath, tmpPngFilePath).Run()
+	tmpPngDirname := fmt.Sprintf("/tmp/pixela-png/%s", time.Now().Format("2006-01-02"))
+	tmpPngFilePath := fmt.Sprintf("%s/%s.png", tmpPngDirname, param.Hash)
+
+	// make destination dir
+	if _, err := os.Stat(tmpPngDirname); err != nil {
+		if err := os.MkdirAll(tmpPngDirname, 0777); err != nil {
+			log.Printf("failed to create dest dir : %s, %v", tmpPngDirname, err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	err = exec.Command("convert", "-geometry", size, tmpSvgFilePath, tmpPngFilePath).Run()
 	if err != nil {
-		log.Printf("failed to run convert command : %s, %v", t.tmpSvgFilePath, err)
+		log.Printf("failed to run convert command : %s, %v", tmpSvgFilePath, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
