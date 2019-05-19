@@ -73,14 +73,14 @@ func (t *Target) parseParams() error {
 	}
 	query := u.Query()
 
-	width := "720"
-	height := "135"
+	width := "870"
+	height := "155"
 	t.rotate = "0"
 
 	if query["width"] != nil {
 		if regexp.MustCompile(`[^0-9]`).Match([]byte(query["width"][0])) {
 			// invalid param, replace valid value
-			width = "720"
+			width = "870"
 		} else {
 			width = query["width"][0]
 		}
@@ -88,7 +88,7 @@ func (t *Target) parseParams() error {
 	if query["height"] != nil {
 		if regexp.MustCompile(`[^0-9]`).Match([]byte(query["height"][0])) {
 			// invalid param, replace valid value
-			height = "135"
+			height = "155"
 		} else {
 			height = query["height"][0]
 		}
@@ -179,12 +179,12 @@ func (t *Target) extractSvg() error {
 	}
 
 	repexp = regexp.MustCompile(`^[\s\S]+<svg.+class="js-calendar-graph-svg">`)
-	repcnd := `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="135" class="js-calendar-graph-svg"><rect x="0" y="0" width="720" height="135" fill="white" stroke="none"/>`
+	repcnd := `<svg xmlns="http://www.w3.org/2000/svg" width="870" height="155" class="js-calendar-graph-svg"><rect x="0" y="0" width="870" height="155" fill="white" stroke="none"/>`
 	extractData := repexp.ReplaceAllString(pageResponse, repcnd)
 
 	// Legend
 	repexp = regexp.MustCompile(`dy="81" style="display: none;">Sat<\/text>[\s\S]+<\/g>[\s\S]+<\/svg>[.\s\S]+\z`)
-	repcnd = `dy="81" style="display: none;">Sat</text><text x="535" y="110">Less</text><g transform="translate(569 , 0)"><rect class="day" width="11" height="11" x="0" y="99" fill="#eeeeee"/></g><g transform="translate(584 , 0)"><rect class="day" width="11" height="11" y="99" fill="#d6e685"/></g><g transform="translate(599 , 0)"><rect class="day" width="11" height="11" y="99" fill="#8cc665"/></g><g transform="translate(614 , 0)"><rect class="day" width="11" height="11" y="99" fill="#44a340"/></g><g transform="translate(629 , 0)"><rect class="day" width="11" height="11" y="99" fill="#1e6823"/></g><text x="648" y="110">More</text></g></svg>`
+	repcnd = `dy="81" style="display: none;">Sat</text><text x="675" y="125">Less</text><g transform="translate(709 , 15)"><rect class="day" width="11" height="11" x="0" y="99" fill="#eeeeee"/></g><g transform="translate(724 , 15)"><rect class="day" width="11" height="11" y="99" fill="#d6e685"/></g><g transform="translate(739 , 15)"><rect class="day" width="11" height="11" y="99" fill="#8cc665"/></g><g transform="translate(754 , 15)"><rect class="day" width="11" height="11" y="99" fill="#44a340"/></g><g transform="translate(769 , 15)"><rect class="day" width="11" height="11" y="99" fill="#1e6823"/></g><text x="788" y="125">More</text></g></svg>`
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
 	// font-family
