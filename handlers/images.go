@@ -178,7 +178,7 @@ func (t *Target) extractSvg() error {
 		return err
 	}
 
-	repexp = regexp.MustCompile(`^[\s\S]+<svg.+class="js-calendar-graph-svg">`)
+	repexp = regexp.MustCompile(`^[\s\S]+<svg.+class="mx-auto\sjs-calendar-graph-svg">`)
 	repcnd := `<svg xmlns="http://www.w3.org/2000/svg" width="870" height="155" class="js-calendar-graph-svg"><rect x="0" y="0" width="870" height="155" fill="white" stroke="none"/>`
 	extractData := repexp.ReplaceAllString(pageResponse, repcnd)
 
