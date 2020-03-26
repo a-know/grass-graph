@@ -2,12 +2,47 @@ runtime: go113
 instance_class: F1
 
 handlers:
+- url: /
+  static_files: public/index.html
+  upload: public/index.html
+  secure: always
+
 - url: /heartbeat
   script: auto
   secure: always
 
+- url: /images/grass-graph-logo.png
+  static_files: public/images/grass-graph-logo.png
+  upload: public/images/grass-graph-logo.png
+  secure: always
+
+- url: /images/logo.png
+  static_files: public/images/logo.png
+  upload: public/images/logo.png
+  secure: always
+
+- url: /images/loader.gif
+  static_files: public/images/loader.gif
+  upload: public/images/loader.gif
+  secure: always
+
+- url: /images/favicon/(.*)
+  static_files: public/images/favicon/\1
+  upload: public/images/favicon/(.*)
+  secure: always
+
+- url: /images/image-bg/(.*)
+  static_files: public/images/image-bg/\1
+  upload: public/images/image-bg/(.*)
+  secure: always
+
 - url: /images/(.*)
   script: auto
+  secure: always
+
+- url: /(.*)
+  static_files: public/\1
+  upload: public/(.*)
   secure: always
 
 automatic_scaling: # see: https://qiita.com/sinmetal/items/017e7aa395ff459fca7c

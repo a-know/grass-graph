@@ -6,4 +6,4 @@ deps:
 	env GO111MODULE=on go mod download
 
 deploy: 
-	gcloud app deploy --project a-know-home --version ${VERSION}
+	gcloud app deploy --project grass-graph --version ${VERSION}
