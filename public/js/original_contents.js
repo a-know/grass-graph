@@ -16,25 +16,3 @@ var getQueryVars = function() {
 
   return vars;
 }
-
-$(function(){
-
-  // query string
-  var query_vars = getQueryVars();
-
-  // visitor notify
-  $.ajax({
-        type : 'POST',
-        url : '/knock',
-        data : { 'user_agent' : navigator.userAgent, 'language' : navigator.language, 'admin' : query_vars['admin'] },
-        cache : false,
-        dataType : 'json',
-
-        success : function(json) {
-          // no operation
-        },
-        complete : function() {
-          // no operation
-        }
-    });
-});

@@ -33,7 +33,7 @@ func main() {
 
 	// for Pixela SVG convert to PNG
 	// /pixela/convert?username=a-know&graphID=test-graph&date=yyyyMMdd&mode=short&stage=dev&hash=xxxxx
-	// r.Get("/pixela/convert", handlers.HandleSVGConvert)
+	r.Get("/pixela/convert", handlers.HandleSVGConvert)
 
 	port := os.Getenv("PORT")
 	if port == "" {

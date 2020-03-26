@@ -40,6 +40,10 @@ handlers:
   script: auto
   secure: always
 
+- url: /pixela/convert
+  script: auto
+  secure: always
+
 - url: /(.*)
   static_files: public/\1
   upload: public/(.*)
