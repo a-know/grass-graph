@@ -1,0 +1,22 @@
+runtime: go113
+instance_class: F1
+
+handlers:
+- url: /heartbeat
+  script: auto
+  secure: always
+
+- url: /images/(.*)
+  script: auto
+  secure: always
+
+automatic_scaling: # see: https://qiita.com/sinmetal/items/017e7aa395ff459fca7c
+  target_cpu_utilization: 0.95
+  target_throughput_utilization: 0.95
+  max_instances: 1
+  min_instances: 0
+  min_idle_instances: 0
+  max_idle_instances: 0
+  min_pending_latency: 3000ms # https://cloud.google.com/appengine/docs/standard/go/config/appref
+  max_pending_latency: 5000ms
+  max_concurrent_requests: 85
