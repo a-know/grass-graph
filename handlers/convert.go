@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"regexp"
 	"time"
 )
 
@@ -102,7 +103,11 @@ func HandleSVGConvert(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	extractData := string(byteArray)
+	pageResponse := string(byteArray)
+
+	repexp := regexp.MustCompile(`<a[\s\S]href="https[.\s\S]+<\/a>`)
+	repcnd := ``
+	extractData := repexp.ReplaceAllString(pageResponse, repcnd)
 
 	// flush to file
 	tmpDirname := fmt.Sprintf("/tmp/pixela-svg/%s", time.Now().Format("2006-01-02"))
