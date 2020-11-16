@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -30,6 +31,7 @@ type Target struct {
 	date               time.Time
 }
 
+// HandleImages :
 func HandleImages(w http.ResponseWriter, r *http.Request) {
 	t := &Target{
 		githubID:           chi.URLParam(r, "githubID"),
@@ -39,16 +41,22 @@ func HandleImages(w http.ResponseWriter, r *http.Request) {
 	err := t.parseParams()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		log.Fatal(err)
+		return
 	}
 
 	err = t.extractSvg()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		log.Fatal(err)
+		return
 	}
 
 	err = t.generatePng()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		log.Fatal(err)
+		return
 	}
 
 	http.ServeFile(w, r, t.tmpPngFilePath)
@@ -168,6 +176,57 @@ func (t *Target) extractSvg() error {
 
 	repexp = regexp.MustCompile(`<text text-anchor="start" class="wday" dx="-10" dy="81" style="display: none;">Sat</text>`)
 	repcnd = ``
+	extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	// repexp = regexp.MustCompile(`dx="-10"`)
+	// repcnd = `dx="-5"`
+	// extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	// repexp = regexp.MustCompile(`dy="25"`)
+	// repcnd = `dy="12"`
+	// extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	// repexp = regexp.MustCompile(`dy="56"`)
+	// repcnd = `dy="28"`
+	// extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	// repexp = regexp.MustCompile(`dy="85"`)
+	// repcnd = `dy="43"`
+	// extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	// // for activity overview
+	// repexp = regexp.MustCompile(`dy="22"`)
+	// repcnd = `dy="12"`
+	// extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	// // for activity overview
+	// repexp = regexp.MustCompile(`dy="48"`)
+	// repcnd = `dy="25"`
+	// extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	// // for activity overview
+	// repexp = regexp.MustCompile(`dy="73"`)
+	// repcnd = `dy="38"`
+	// extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	repexp = regexp.MustCompile(`var\(--color-calendar-graph-day-bg\)`)
+	repcnd = `#eeeeee`
+	extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	repexp = regexp.MustCompile(`var\(--color-calendar-graph-day-L1-bg\)`)
+	repcnd = `#d6e685`
+	extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	repexp = regexp.MustCompile(`var\(--color-calendar-graph-day-L2-bg\)`)
+	repcnd = `#8cc665`
+	extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	repexp = regexp.MustCompile(`var\(--color-calendar-graph-day-L3-bg\)`)
+	repcnd = `#44a340`
+	extractData = repexp.ReplaceAllString(extractData, repcnd)
+
+	repexp = regexp.MustCompile(`var\(--color-calendar-graph-day-L4-bg\)`)
+	repcnd = `#1e6823`
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
 	// font-family
