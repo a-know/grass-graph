@@ -159,74 +159,43 @@ func (t *Target) extractSvg() error {
 
 	// Legend
 	repexp = regexp.MustCompile(`dy="81" style="display: none;">Sat<\/text>[\s\S]+<\/g>[\s\S]+<\/svg>[.\s\S]+\z`)
-	repcnd = `dy="81" style="display: none;">Sat</text><text x="675" y="125">Less</text><g transform="translate(709,15)"><rect class="day" width="11" height="11" x="0" y="99" fill="#eeeeee"/></g><g transform="translate(724,15)"><rect class="day" width="11" height="11" y="99" fill="#d6e685"/></g><g transform="translate(739,15)"><rect class="day" width="11" height="11" y="99" fill="#8cc665"/></g><g transform="translate(754,15)"><rect class="day" width="11" height="11" y="99" fill="#44a340"/></g><g transform="translate(769,15)"><rect class="day" width="11" height="11" y="99" fill="#1e6823"/></g><text x="788" y="125">More</text></g></svg>`
+	repcnd = `dy="81" style="display: none;">Sat</text><text x="675" y="125">Less</text><g transform="translate(709,15)"><rect class="day" rx="2" ry="2" width="11" height="11" x="0" y="99" fill="#eeeeee"/></g><g transform="translate(724,15)"><rect class="day" rx="2" ry="2" width="11" height="11" y="99" fill="#d6e685"/></g><g transform="translate(739,15)"><rect class="day" rx="2" ry="2" width="11" height="11" y="99" fill="#8cc665"/></g><g transform="translate(754,15)"><rect class="day" rx="2" ry="2" width="11" height="11" y="99" fill="#44a340"/></g><g transform="translate(769,15)"><rect class="day" rx="2" ry="2" width="11" height="11" y="99" fill="#1e6823"/></g><text x="788" y="125">More</text></g></svg>`
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`<text text-anchor="start" class="wday" dx="-10" dy="8" style="display: none;">Sun</text>`)
+	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-10" dy="8" style="display: none;">Sun</text>`)
 	repcnd = ``
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`<text text-anchor="start" class="wday" dx="-10" dy="32" style="display: none;">Tue</text>`)
+	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-10" dy="32" style="display: none;">Tue</text>`)
 	repcnd = ``
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`<text text-anchor="start" class="wday" dx="-10" dy="57" style="display: none;">Thu</text>`)
+	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-10" dy="57" style="display: none;">Thu</text>`)
 	repcnd = ``
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`<text text-anchor="start" class="wday" dx="-10" dy="81" style="display: none;">Sat</text>`)
+	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-10" dy="81" style="display: none;">Sat</text>`)
 	repcnd = ``
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	// repexp = regexp.MustCompile(`dx="-10"`)
-	// repcnd = `dx="-5"`
-	// extractData = repexp.ReplaceAllString(extractData, repcnd)
-
-	// repexp = regexp.MustCompile(`dy="25"`)
-	// repcnd = `dy="12"`
-	// extractData = repexp.ReplaceAllString(extractData, repcnd)
-
-	// repexp = regexp.MustCompile(`dy="56"`)
-	// repcnd = `dy="28"`
-	// extractData = repexp.ReplaceAllString(extractData, repcnd)
-
-	// repexp = regexp.MustCompile(`dy="85"`)
-	// repcnd = `dy="43"`
-	// extractData = repexp.ReplaceAllString(extractData, repcnd)
-
-	// // for activity overview
-	// repexp = regexp.MustCompile(`dy="22"`)
-	// repcnd = `dy="12"`
-	// extractData = repexp.ReplaceAllString(extractData, repcnd)
-
-	// // for activity overview
-	// repexp = regexp.MustCompile(`dy="48"`)
-	// repcnd = `dy="25"`
-	// extractData = repexp.ReplaceAllString(extractData, repcnd)
-
-	// // for activity overview
-	// repexp = regexp.MustCompile(`dy="73"`)
-	// repcnd = `dy="38"`
-	// extractData = repexp.ReplaceAllString(extractData, repcnd)
-
-	repexp = regexp.MustCompile(`var\(--color-calendar-graph-day-bg\)`)
-	repcnd = `#eeeeee`
+	repexp = regexp.MustCompile(`data-level="0"`)
+	repcnd = `fill="#eeeeee"`
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`var\(--color-calendar-graph-day-L1-bg\)`)
-	repcnd = `#d6e685`
+	repexp = regexp.MustCompile(`data-level="1"`)
+	repcnd = `fill="#d6e685"`
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`var\(--color-calendar-graph-day-L2-bg\)`)
-	repcnd = `#8cc665`
+	repexp = regexp.MustCompile(`data-level="2"`)
+	repcnd = `fill="#8cc665"`
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`var\(--color-calendar-graph-day-L3-bg\)`)
-	repcnd = `#44a340`
+	repexp = regexp.MustCompile(`data-level="3"`)
+	repcnd = `fill="#44a340"`
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`var\(--color-calendar-graph-day-L4-bg\)`)
-	repcnd = `#1e6823`
+	repexp = regexp.MustCompile(`data-level="4"`)
+	repcnd = `fill="#1e6823"`
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
 	// font-family
