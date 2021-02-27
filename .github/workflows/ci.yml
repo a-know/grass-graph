@@ -1,0 +1,16 @@
+name: Test
+on: pull_request
+
+jobs:
+  running-test:
+    runs-on: ubuntu-latest
+    environment:
+      name: CI
+    steps:
+      - name: Run Autify TestPlan
+        uses: a-know/actions-autify-light@main
+        with:
+          project_id: ${{ secrets.AUTIFY_PROJECT_ID }}
+          testplan_id: ${{ secrets.AUTIFY_TESTPLAN_ID }}
+        env:
+          AUTIFY_PERSONAL_TOKEN: ${{ secrets.AUTIFY_PERSONAL_TOKEN }}
