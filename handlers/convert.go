@@ -105,7 +105,7 @@ func HandleSVGConvert(w http.ResponseWriter, r *http.Request) {
 	}
 	pageResponse := string(byteArray)
 
-	repexp := regexp.MustCompile(`<a[\s\S]href="https[.\s\S]+<\/a>`)
+	repexp := regexp.MustCompile(`<g>[\s\S\n]+<rect[\s\S\n]+</svg>[\s\S\n]</g>`)
 	repcnd := ``
 	extractData := repexp.ReplaceAllString(pageResponse, repcnd)
 
