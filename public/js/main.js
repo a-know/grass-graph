@@ -18,9 +18,9 @@ $(document).ready(function() {
 
 $("#mc-github-id").on('blur keydown keyup keypress change',function(){
   var textWrite = $("#mc-github-id").val();
-  $("#gg-img-tag").val('<img src="https://grass-graph.moshimo.works/images/' + textWrite + '.png">');
-  $("#gg-img-tag-option").val('<img src="https://grass-graph.moshimo.works/images/' + textWrite + '.png?rotate=270&width=568&height=88">');
-  $("#gg-img-tag-date-option").val('<img src="https://grass-graph.moshimo.works/images/' + textWrite + '.png?date=20160701">');
+  $("#gg-img-tag").val('<img src="https://grass-graph.appspot.com/images/' + textWrite + '.png">');
+  $("#gg-img-tag-option").val('<img src="https://grass-graph.appspot.com/images/' + textWrite + '.png?rotate=270&width=568&height=88">');
+  $("#gg-img-tag-date-option").val('<img src="https://grass-graph.appspot.com/images/' + textWrite + '.png?date=20160701">');
 });
 
 $("#generate-btn").on('click',function(){
@@ -30,6 +30,6 @@ $("#generate-btn").on('click',function(){
   $("#gg-img-area").empty();
   $("#gg-img-area").append("<h2 class='description'><small>" + $("#mc-github-id").val() + "'s GitHub Public Contributions Grass-Graph</small></h2>")
   var img_element = document.createElement('img');
-  img_element.setAttribute("src", "https://grass-graph.moshimo.works/images/" + $("#mc-github-id").val() + ".png");
+  img_element.setAttribute("src", "https://grass-graph.appspot.com/images/" + $("#mc-github-id").val() + ".png");
   $("#gg-img-area").append(img_element);
 });
