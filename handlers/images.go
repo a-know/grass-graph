@@ -162,19 +162,19 @@ func (t *Target) extractSvg() error {
 	repcnd = `dy="81" style="display: none;">Sat</text><text x="675" y="125">Less</text><g transform="translate(709,15)"><rect class="day" rx="2" ry="2" width="11" height="11" x="0" y="99" fill="#eeeeee"/></g><g transform="translate(724,15)"><rect class="day" rx="2" ry="2" width="11" height="11" y="99" fill="#d6e685"/></g><g transform="translate(739,15)"><rect class="day" rx="2" ry="2" width="11" height="11" y="99" fill="#8cc665"/></g><g transform="translate(754,15)"><rect class="day" rx="2" ry="2" width="11" height="11" y="99" fill="#44a340"/></g><g transform="translate(769,15)"><rect class="day" rx="2" ry="2" width="11" height="11" y="99" fill="#1e6823"/></g><text x="788" y="125">More</text></g></svg>`
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-10" dy="8" style="display: none;">Sun</text>`)
+	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-15" dy="8" style="display: none;">Sun</text>`)
 	repcnd = ``
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-10" dy="32" style="display: none;">Tue</text>`)
+	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-15" dy="32" style="display: none;">Tue</text>`)
 	repcnd = ``
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-10" dy="57" style="display: none;">Thu</text>`)
+	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-15" dy="57" style="display: none;">Thu</text>`)
 	repcnd = ``
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
-	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-10" dy="81" style="display: none;">Sat</text>`)
+	repexp = regexp.MustCompile(`<text text-anchor="start" class="ContributionCalendar-label" dx="-15" dy="81" style="display: none;">Sat</text>`)
 	repcnd = ``
 	extractData = repexp.ReplaceAllString(extractData, repcnd)
 
